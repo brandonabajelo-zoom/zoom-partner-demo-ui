@@ -1,0 +1,143 @@
+$background: #F8F9FA !important;
+$zoomBlue: #2D8CFF;
+
+body {
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+
+  background-color: $background;
+  height: 100%;
+}
+
+code {
+  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
+    monospace;
+}
+
+button {
+  border-radius: 6px;
+}
+
+#zmmtg-root {
+  display: none;
+}
+
+.ant-layout {
+  height: 68px;
+  background: $background;
+  .ant-layout-header {
+    background: $background;
+    .ant-menu.ant-menu-light.ant-menu-root.ant-menu-horizontal {
+      font-size: 20px;
+      background: $background;
+    }
+  }  
+}
+
+.navbar-logo {
+  max-height: 68px;
+}
+
+.home-img-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto;
+  width: 50%;
+  margin-bottom: 20px;
+  flex-direction: column;
+  .logo {
+    margin-top: 25vh;
+    max-width: 30vw;
+    height: auto;
+  }
+  h1 {
+    display: flex;
+    color: grey;
+    font-size: 2.5em;
+    margin-top: 25px;
+  }
+}
+
+.layout-container {
+  padding: 30px 60px 0px 60px;
+  > .ant-layout-header {
+    font-size: 30px;
+    font-weight: 500;
+    padding-left: 0px;
+    padding-right: 0px;
+    margin-bottom: 10px;
+    &.header-flex {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    > small {
+      color: grey;
+      font-size: 18px;
+    }
+    > div > small {
+      color: grey;
+      font-size: 18px;
+      margin-right: 10px;
+    }
+    &.header-start {
+      display: flex;
+      align-items: center;
+      > .carrot-right {
+        display: flex;
+        margin: 5px 10px 0px 10px;
+        .anticon {
+          font-size: 14px;
+        }
+      }
+      > .meeting-topic {
+        text-overflow: ellipsis;
+        overflow: hidden;
+        white-space: nowrap;
+        max-width: 60%;
+      }
+      > small {
+        margin: 10px 0px 0px 10px;
+        display: flex;
+      }
+    }
+  }
+  &.edit {
+    padding: 0px;
+  }
+}
+
+.align-center {
+  text-align: center;
+  padding-top: 20vh; 
+}
+
+.flex-space-between {
+  display: flex;
+  justify-content: space-between;
+}
+
+.flex-end {
+  display: flex;
+  justify-content: flex-end;
+  > .submit-btn {
+    margin-left: 10px;
+  }
+}
+
+.ant-menu-item.nav-item-logo.ant-menu-item-disabled {
+  float: right;
+  cursor: default;
+  > .anticon {
+    font-size: 22px;
+    margin-left: 10px;
+    pointer-events: none;
+  }
+}
+
+@import './meetings.scss'

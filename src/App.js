@@ -1,25 +1,38 @@
-import logo from './logo.svg';
-import './App.css';
+import React, { useEffect } from 'react';
+import { Layout } from 'antd';
+import { useLocation, Switch, Route } from 'react-router-dom';
+import axios from 'axios';
 
-function App() {
+import Nav from './Components/Nav';
+import Home from './Components/Home';
+import Users from './Components/Users';
+import WebSDK from './Components/WebSDK';
+
+const { Header, Content } = Layout;
+
+export default function App() {
+  const { pathname } = useLocation();
+
+  useEffect(() => { axios.post('/api/login'); }, []);
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <Layout>
+      <Header>
+        <Nav path={pathname} />
+      </Header>
+      <Content>
+        <Switch>
+          <Route path="/users">
+            <Users />
+          </Route>
+          <Route path="/websdk">
+            <WebSDK />
+          </Route>
+          <Route path="/">
+            <Home />
+          </Route>
+        </Switch>
+      </Content>
+    </Layout>
   );
 }
-
-export default App;

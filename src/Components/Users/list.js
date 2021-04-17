@@ -15,6 +15,7 @@ const columns = [
     title: 'First Name',
     dataIndex: 'first_name',
     key: 'first_name',
+    sorter: (a, b) => a.first_name.localeCompare(b.first_name),
     render: (text, row) => (
       <Link to={`/users/${row.id}`}>
         {text}
@@ -25,6 +26,7 @@ const columns = [
     title: 'Last Name',
     dataIndex: 'last_name',
     key: 'last_name',
+    sorter: (a, b) => a.last_name.localeCompare(b.last_name),
     render: (text, row) => (
       <Link to={`/users/${row.id}`}>
         {text}
@@ -35,17 +37,20 @@ const columns = [
     title: 'Email',
     dataIndex: 'email',
     key: 'email',
+    sorter: (a, b) => a.email.localeCompare(b.email),
   },
   {
     title: 'Timezone',
     dataIndex: 'timezone',
     key: 'timezone',
+    sorter: (a, b) => a.timezone.localeCompare(b.timezone),
     render: (text) => (text ? <Tag color="blue">{text}</Tag> : ''),
   },
   {
     title: 'Status',
     dataIndex: 'status',
     key: 'status',
+    sorter: (a, b) => a.status.localeCompare(b.status),
     render: (text) => <Badge status={text === 'active' ? 'success' : 'danger'} text={_.upperFirst(text)} />,
   },
 ];
@@ -74,7 +79,7 @@ export default function UsersList() {
           columns={columns}
           dataSource={data.users}
           rowKey="id"
-          pagination={!!data.nextPageToken && { position: 'bottomRight' }}
+          pagination={false}
           loading={loading && !data.users}
         />
       </Content>

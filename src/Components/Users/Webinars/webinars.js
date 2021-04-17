@@ -1,44 +1,64 @@
-import React from 'react';
+import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import useAxios from 'axios-hooks';
 import axios from 'axios';
+import { Button, Tooltip, Divider, Input } from 'antd';
+import { Link } from 'react-router-dom';
 import {
-  Card, Tag, Button, Tooltip, Popconfirm,
-} from 'antd';
-import { DateTime } from 'luxon';
-import { Link, useHistory } from 'react-router-dom';
-import {
-  QuestionCircleOutlined, ReloadOutlined, PlusOutlined,
-  DeleteOutlined, SettingOutlined, VideoCameraOutlined,
+  ReloadOutlined, PlusOutlined, AppstoreOutlined, BarsOutlined,
 } from '@ant-design/icons';
 
-const renderId = (id) => (
-  <p className="card-field">
-    Webinar ID:
-    <Tag color="purple">{id}</Tag>
-  </p>
-);
+import Grid from './grid';
+import Table from './table';
+import Error from '../error';
 
-const renderStartTime = (time) => (
-  <p className="card-field">
-    Start Time:
-    <Tag color="blue">{DateTime.fromISO(time).toLocaleString(DateTime.DATETIME_MED)}</Tag>
-  </p>
-);
+export default function UserWebinars({ userId, userName, userEmail }) {
+  const [gridView, toggleGridView] = useState(false);
+  const [query, setQuery] = useState('');
 
-export default function UserWebinars({ userId, websdkPath }) {
-  const { push } = useHistory();
   const [{ data = {}, loading, error }, refetchWebinars] = useAxios({ url: `/api/users/${userId}/webinars` });
 
   const confirmDelete = async (webinarId) => {
     await axios.delete(`/api/webinars/${webinarId}`).then(() => refetchWebinars());
   };
 
+  const filteredData = (() => {
+    const { webinars = [], ...rest } = data || {};
+    return {
+      webinars: webinars.filter(({ topic }) => topic.toLowerCase().indexOf(query.toLowerCase()) > -1),
+      ...rest,
+    }
+  })();
+
+  const componentProps = {
+    data: filteredData,
+    userName,
+    confirmDelete,
+    loading,
+    userId,
+    userEmail,
+  }
+
   return (
     <div className="component-container">
       <div className="flex-space-between">
         <div className="component-header">Webinars</div>
         <div>
+          <Tooltip title="Table View">
+            <Button
+              icon={<BarsOutlined />}
+              type={!gridView ? 'primary' : 'default'}
+              onClick={() => toggleGridView(false)}
+            />
+          </Tooltip>
+          <Tooltip title="Grid View">
+            <Button
+              className="add-event"
+              icon={<AppstoreOutlined />}
+              type={gridView ? 'primary' : 'default'}
+              onClick={() => toggleGridView(true)}
+            />
+          </Tooltip>
           <Link to={`/users/${userId}/new_webinar`}>
             <Button className="add-event" icon={<PlusOutlined />} type="primary">
               Webinar
@@ -49,50 +69,25 @@ export default function UserWebinars({ userId, websdkPath }) {
           </Tooltip>
         </div>
       </div>
-      {error && !loading && (
-        <div style={{ textAlign: 'center' }}>
-          <h1>Error fetching webinars</h1>
-        </div>
-      )}
-      {!error && !loading && !(data.webinars || []).length && (
-        <div style={{ textAlign: 'center' }}>
-          <h1>No webinars found</h1>
-        </div>
-      )}
+      {error && <Error error={error} refetch={refetchWebinars} />}
       {!error && (
-        <div className="card-container">
-          {(data.webinars || []).map(({
-            uuid, topic, id, start_time,
-          }) => (
-            <Card
-              style={{ width: '20%' }}
-              key={uuid}
-              loading={loading && !data}
-              title={topic}
-              hoverable
-              actions={[
-                <VideoCameraOutlined onClick={() => push(websdkPath)} />,
-                <SettingOutlined onClick={() => push(`/users/${userId}/webinars/${id}`)} />,
-                <Popconfirm
-                  title="Are you sure you want to delete this webinar?"
-                  onConfirm={() => confirmDelete(id)}
-                  icon={<QuestionCircleOutlined style={{ color: 'red' }} />}
-                  okText="Delete"
-                >
-                  <DeleteOutlined />
-                </Popconfirm>,
-              ]}
-            >
-              {!!id && renderId(id)}
-              {!!start_time && renderStartTime(start_time)}
-            </Card>
-          ))}
-        </div>
+        <>
+        <Input
+          value={query}
+          onChange={e => setQuery(e.target.value)}
+          placeholder="Search Topics"
+        />
+        <Divider />
+        </>
       )}
+      {!error && gridView && <Grid {...componentProps} />}
+      {!error && !gridView && <Table {...componentProps} />}
     </div>
   );
 }
 
 UserWebinars.propTypes = {
   userId: PropTypes.string.isRequired,
+  userName: PropTypes.string.isRequired,
+  userEmail: PropTypes.string.isRequired,
 };

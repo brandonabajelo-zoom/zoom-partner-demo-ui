@@ -25,7 +25,7 @@ export default function MeetingForm({ initialValues, refetch }) {
   const [form] = Form.useForm();
   const { push } = useHistory();
 
-  useEffect(() => form.resetFields(), [initialValues]);
+  useEffect(() => form.resetFields(), [initialValues, form]);
 
   const [{ loading }, executePost] = useAxios(
     { url: `/api/meetings/${userId}`, method: 'POST' },
@@ -36,8 +36,6 @@ export default function MeetingForm({ initialValues, refetch }) {
     { url: `/api/meetings/${meetingId}`, method: 'PATCH' },
     { manual: true },
   );
-
-  console.log(initialValues)
 
   const formatData = (data) => {
     const {
@@ -87,12 +85,10 @@ export default function MeetingForm({ initialValues, refetch }) {
     return DEFAULT_INITIAL_VALUES;
   })();
 
-  const title = meetingId ? 'Manage Meeting' : 'Schedule Meeting';
-
   return (
     <Layout className={meetingId ? 'layout-container edit' : 'layout-container'}>
       <Header className="header-flex">
-        <div>{title}</div>
+        <div>{meetingId ? 'Manage Meeting' : 'Schedule Meeting'}</div>
       </Header>
       <Content className="form-content">
         <Form
@@ -148,7 +144,7 @@ export default function MeetingForm({ initialValues, refetch }) {
             </Select>
           </Item>
           <Item
-            name="passcode"
+            name="password"
             label="Passcode"
             rules={[{
               max: 10,

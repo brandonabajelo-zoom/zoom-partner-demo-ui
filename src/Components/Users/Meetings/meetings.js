@@ -1,33 +1,21 @@
-import React from 'react';
+import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import useAxios from 'axios-hooks';
 import axios from 'axios';
+import { Button, Tooltip, Divider, Input } from 'antd';
+import { Link } from 'react-router-dom';
 import {
-  Card, Tag, Button, Tooltip, Popconfirm,
-} from 'antd';
-import { Link, useHistory } from 'react-router-dom';
-import { DateTime } from 'luxon';
-import {
-  QuestionCircleOutlined, ReloadOutlined, PlusOutlined,
-  DeleteOutlined, SettingOutlined, VideoCameraOutlined,
+  ReloadOutlined, PlusOutlined, AppstoreOutlined, BarsOutlined,
 } from '@ant-design/icons';
 
-const renderId = (id) => (
-  <p className="card-field">
-    Meeting ID:
-    <Tag color="purple">{id}</Tag>
-  </p>
-);
+import Grid from './grid';
+import Table from './table';
+import Error from '../error';
 
-const renderStartTime = (time) => (
-  <p className="card-field">
-    Start Time:
-    <Tag color="blue">{DateTime.fromISO(time).toLocaleString(DateTime.DATETIME_MED)}</Tag>
-  </p>
-);
+export default function UserMeetings({ userId, userName }) {
+  const [gridView, toggleGridView] = useState(false);
+  const [query, setQuery] = useState('');
 
-export default function UserMeetings({ userId, websdkPath }) {
-  const { push } = useHistory();
   const [{ data = {}, loading, error }, refetch] = useAxios(
     { url: `/api/users/${userId}/meetings` },
   );
@@ -36,11 +24,42 @@ export default function UserMeetings({ userId, websdkPath }) {
     await axios.delete(`/api/meetings/${meetingId}`).then(() => refetch());
   };
 
+  const filteredData = (() => {
+    const { meetings = [], ...rest } = data || {};
+    return {
+      meetings: meetings.filter(({ topic }) => topic.toLowerCase().indexOf(query.toLowerCase()) > -1),
+      ...rest,
+    }
+  })();
+
+  const componentProps = {
+    data: filteredData,
+    userName,
+    confirmDelete,
+    loading,
+    userId,
+  };
+
   return (
     <div className="component-container">
       <div className="flex-space-between">
         <div className="component-header">Meetings</div>
         <div>
+          <Tooltip title="Table View">
+            <Button
+              icon={<BarsOutlined />}
+              type={!gridView ? 'primary' : 'default'}
+              onClick={() => toggleGridView(false)}
+            />
+          </Tooltip>
+          <Tooltip title="Grid View">
+            <Button
+              className="add-event"
+              icon={<AppstoreOutlined />}
+              type={gridView ? 'primary' : 'default'}
+              onClick={() => toggleGridView(true)}
+            />
+          </Tooltip>
           <Link to={`/users/${userId}/new_meeting`}>
             <Button className="add-event" icon={<PlusOutlined />} type="primary">
               Meeting
@@ -51,51 +70,24 @@ export default function UserMeetings({ userId, websdkPath }) {
           </Tooltip>
         </div>
       </div>
-      {error && (
-        <div style={{ textAlign: 'center' }}>
-          <h1>Error fetching meetings</h1>
-        </div>
-      )}
-      {!error && !loading && !(data.meetings || []).length && (
-        <div style={{ textAlign: 'center' }}>
-          <h1>No meetings found</h1>
-        </div>
-      )}
+      {error &&  <Error error={error} refetch={refetch} />}
       {!error && (
-        <div className="card-container">
-          {(data.meetings || []).map(({
-            uuid, topic, id, start_time,
-          }) => (
-            <Card
-              style={{ width: '20%' }}
-              key={uuid}
-              loading={loading && !data}
-              title={topic}
-              hoverable
-              actions={[
-                <VideoCameraOutlined onClick={() => push(websdkPath)} />,
-                <SettingOutlined onClick={() => push(`/users/${userId}/meetings/${id}`)} />,
-                <Popconfirm
-                  title="Are you sure you want to delete this meeting?"
-                  onConfirm={() => confirmDelete(id)}
-                  icon={<QuestionCircleOutlined style={{ color: 'red' }} />}
-                  okText="Delete"
-                >
-                  <DeleteOutlined />
-                </Popconfirm>,
-              ]}
-            >
-              {!!id && renderId(id)}
-              {!!start_time && renderStartTime(start_time)}
-            </Card>
-          ))}
-        </div>
+        <>
+        <Input
+          value={query}
+          onChange={e => setQuery(e.target.value)}
+          placeholder="Search Topics"
+        />
+        <Divider />
+        </>
       )}
+      {!error && gridView && <Grid {...componentProps} />}
+      {!error && !gridView && <Table {...componentProps} />}
     </div>
   );
 }
 
 UserMeetings.propTypes = {
   userId: PropTypes.string.isRequired,
-  websdkPath: PropTypes.string.isRequired,
+  userName: PropTypes.string.isRequired,
 };

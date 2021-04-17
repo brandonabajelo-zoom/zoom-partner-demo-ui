@@ -4,6 +4,7 @@ import {
   useParams, useHistory, useLocation, Link, Switch, Route,
 } from 'react-router-dom';
 import useAxios from 'axios-hooks';
+import _ from 'lodash';
 import { RightOutlined } from '@ant-design/icons';
 
 import MeetingForm from './form';
@@ -18,15 +19,14 @@ export default function Meeting() {
   const { userId, meetingId } = useParams();
   const { push } = useHistory();
   const { pathname, search } = useLocation();
+
   const [{ data = {}, loading, error }, refetchMeeting] = useAxios({ url: `/api/meetings/${meetingId}` });
   const [{ data: userData = {} }] = useAxios({ url: `/api/users/${userId}` });
 
   const { first_name = '', last_name = '' } = userData;
   const { topic = '' } = data;
 
-  console.log(data);
-
-  if (loading && !data) {
+  if (loading && _.isEmpty(data)) {
     return (
       <Layout className="layout-container">
         <Content className="align-center">
@@ -36,7 +36,7 @@ export default function Meeting() {
     );
   }
 
-  if (error && !loading && !data) {
+  if (error) {
     return (
       <Layout className="layout-container">
         <Content className="align-center">
@@ -63,7 +63,13 @@ export default function Meeting() {
         <small>Meeting</small>
       </Header>
       <Content>
-        <Tabs className="user-tabs" type="card" size="large" activeKey={pathname} onChange={(key) => push(key + (search || ''))}>
+        <Tabs
+          className="user-tabs"
+          type="card"
+          size="large"
+          activeKey={pathname}
+          onChange={(key) => push(key + (search || ''))}
+        >
           <TabPane tab="Manage" key={`/users/${userId}/meetings/${meetingId}`} />
           <TabPane tab="Participants" key={`/users/${userId}/meetings/${meetingId}/participants`} />
         </Tabs>

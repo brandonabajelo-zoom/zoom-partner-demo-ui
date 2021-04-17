@@ -13,7 +13,7 @@ ZoomMtg.setZoomJSLib('https://source.zoom.us/1.9.1/lib', '/av');
 
 export default function WebSDK() {
   const {
-    meetingNumber, userName, userId,
+    meetingNumber, userName, userId, userEmail = '',
   } = qs.parse((useHistory().location || {}).search);
   const {
     REACT_APP_ZOOM_API_KEY = '', REACT_APP_SIGNATURE_ENDPOINT = '',
@@ -33,6 +33,7 @@ export default function WebSDK() {
           userName,
           apiKey: REACT_APP_ZOOM_API_KEY,
           // passWord,
+          userEmail,
           success: (joinSuccess) => console.log('Meeting join success: ', joinSuccess),
           error: (joinError) => console.error('Error joining meeting: ', joinError),
         });

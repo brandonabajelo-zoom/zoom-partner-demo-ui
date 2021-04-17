@@ -1,8 +1,17 @@
 $zoomBlue: #2D8CFF;
+$white: #fff;
 
 .component-container {
   margin: 20px 0px;
   > div > .component-header {
+    font-size: 25px;
+    font-weight: 500;
+    margin-bottom: 20px;
+    > div > .ant-switch {
+      font-size: 20px;
+    }
+  }
+  > .component-header {
     font-size: 25px;
     font-weight: 500;
     margin-bottom: 20px;
@@ -38,4 +47,14 @@ $zoomBlue: #2D8CFF;
 
 .question-icon {
   margin-left: 10px;
+}
+
+.anticon.table-icon {
+  > svg {
+    color: rgba(0, 0, 0, 0.45);
+    font-size: 18px;
+    &:hover {
+      color: $zoomBlue;
+    }
+  }
 }

@@ -1,13 +1,16 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
+import PropTypes from 'prop-types';
 import {
   Layout, Input, Form, Button, DatePicker, Select, Checkbox,
 } from 'antd';
 import { useParams, useHistory, Link } from 'react-router-dom';
 import { CheckOutlined } from '@ant-design/icons';
 import { DateTime } from 'luxon';
+import _ from 'lodash';
 import moment from 'moment';
 import useAxios from 'axios-hooks';
 import timezones from '../../../timezones';
+import Error from '../error';
 
 const { Header, Content } = Layout;
 const { TextArea, Group } = Input;
@@ -18,21 +21,30 @@ const DEFAULT_INITIAL_VALUES = {
   hour: 1, min: 0, timezone: Intl.DateTimeFormat().resolvedOptions().timeZone, start_time: moment(),
 };
 
-export default function WebinarForm() {
-  const { userId } = useParams();
+export default function WebinarForm({ initialValues, refetch }) {
+  const { userId, webinarId } = useParams();
+  const [formError, setFormError] = useState()
   const [form] = Form.useForm();
   const { push } = useHistory();
 
+  useEffect(() => form.resetFields(), [initialValues, form]);
+
   const [{ loading }, executePost] = useAxios(
-    { url: `/api/webinars/${userId}`, method: 'POST' }, { manual: true },
+    { url: `/api/webinars/${userId}`, method: 'POST' },
+    { manual: true },
   );
 
-  const handleSave = async (data) => {
+  const [{ loading: patchLoading }, executePatch] = useAxios(
+    { url: `/api/webinars/${webinarId}`, method: 'PATCH' },
+    { manual: true },
+  );
+
+  const formatData = (data) => {
     const {
       hour, min, start_time: moment_start_time, auto_recording, approval_type, ...rest
     } = data;
 
-    const postData = {
+    const submitData = {
       duration: (parseInt(hour, 10) * 60) + parseInt(min, 10),
       start_time: DateTime.fromISO(moment_start_time.format('YYYY-MM-DDTHH:mm:ss')).toISO(),
       settings: {
@@ -42,24 +54,61 @@ export default function WebinarForm() {
       ...rest,
     };
 
-    await executePost({ data: postData }).then(() => push(`/users/${userId}/webinars`));
+    return submitData;
+  }
+
+  const handleSave = async (data) => {
+    const postData = formatData(data);
+
+    await executePost({ data: postData })
+      .then(() => push(`/users/${userId}/webinars`))
+      .catch(err => setFormError(err));
   };
 
+  const handleEdit = async (data) => {
+    const editData = formatData(data);
+
+    await executePatch({ data: editData }).then(() => !!refetch && refetch())
+  }
+
+  const formInitialValues = (() => {
+    if (!_.isEmpty(initialValues)) {
+      const {
+        duration,
+        start_time: current_time,
+        settings: { auto_recording, approval_type },
+        ...rest
+      } = initialValues;
+      const hour = duration / 60;
+      const min = (hour - Math.floor(hour)) * 60;
+      const start_time = moment(current_time);
+      return {
+        hour, min,
+        start_time,
+        auto_recording: auto_recording === 'cloud',
+        approval_type: approval_type === 0,
+        ...rest,
+      }
+    }
+    return DEFAULT_INITIAL_VALUES;
+  })();
+
   return (
-    <Layout className="layout-container">
+    <Layout className={webinarId ? 'layout-container edit' : 'layout-container'}>
       <Header className="header-flex">
-        <div>Schedule a Webinar</div>
+        <div>{webinarId ? 'Manage Webinar' : 'Schedule Webinar'}</div>
       </Header>
       <Content className="form-content">
+        {formError && <Error error={formError} />}
         <Form
           form={form}
           name="meetingForm"
-          onFinish={handleSave}
+          onFinish={webinarId ? handleEdit : handleSave}
           labelCol={{ span: 5 }}
           labelAlign="left"
           colon={false}
           requiredMark={false}
-          initialValues={DEFAULT_INITIAL_VALUES}
+          initialValues={formInitialValues}
         >
           <Item
             label="Topic"
@@ -131,7 +180,7 @@ export default function WebinarForm() {
                 icon={<CheckOutlined />}
                 type="primary"
                 htmlType="submit"
-                loading={loading}
+                loading={loading || patchLoading}
               >
                 Save
               </Button>
@@ -141,4 +190,10 @@ export default function WebinarForm() {
       </Content>
     </Layout>
   );
+}
+
+
+WebinarForm.propTypes = {
+  initialValues: PropTypes.object,
+  refetch: PropTypes.func,
 }

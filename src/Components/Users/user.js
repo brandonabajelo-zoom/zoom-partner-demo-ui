@@ -9,10 +9,11 @@ import useAxios from 'axios-hooks';
 import _ from 'lodash';
 import qs from 'query-string';
 import { DateTime } from 'luxon';
-import { QuestionCircleOutlined } from '@ant-design/icons';
+import { VideoCameraOutlined } from '@ant-design/icons';
 
 import UserMeetings from './Meetings/meetings';
 import UserWebinars from './Webinars/webinars';
+import UserRecordings from './Recordings';
 
 const { Header, Content } = Layout;
 const { TabPane } = Tabs;
@@ -65,8 +66,6 @@ export default function User() {
     );
   }
 
-  const websdkPath = `/websdk?${qs.stringify({ meetingNumber: pmi, userName: first_name, userId: id })}`;
-
   return (
     <Layout className="layout-container">
       <Header className="header-flex">
@@ -79,11 +78,11 @@ export default function User() {
             {id}
           </Item>
           <Item {...itemStyles} label="Personal Meeting ID">
-            <Link to={websdkPath}>
-              {pmi}
-            </Link>
-            <Tooltip title="Click your Personal Meeting ID to start an instant zoom meeting!">
-              <QuestionCircleOutlined className="question-icon" />
+            {pmi}
+            <Tooltip title="Click to start an instant zoom meeting!">
+              <Link to={`/websdk?${qs.stringify({ meetingNumber: pmi, userName: `${first_name} ${last_name}`, userId: id })}`}>
+                <VideoCameraOutlined className="question-icon" />
+              </Link>
             </Tooltip>
           </Item>
           <Item {...itemStyles} label="Timezone"><Tag color="blue">{timezone}</Tag></Item>
@@ -96,13 +95,17 @@ export default function User() {
         <Tabs className="user-tabs" type="card" size="large" activeKey={pathname} onChange={(key) => push(key + (search || ''))}>
           <TabPane tab="Meetings" key={`/users/${userId}`} />
           <TabPane tab="Webinars" key={`/users/${userId}/webinars`} />
+          <TabPane tab="Cloud Recordings" key={`/users/${userId}/recordings`} />
         </Tabs>
         <Switch>
           <Route path="/users/:userId/webinars">
-            <UserWebinars userId={userId} websdkPath={websdkPath} />
+            <UserWebinars userId={userId} userName={`${first_name} ${last_name}`} userEmail={email} />
+          </Route>
+          <Route path="/users/:userId/recordings">
+            <UserRecordings />
           </Route>
           <Route>
-            <UserMeetings userId={userId} websdkPath={websdkPath} />
+            <UserMeetings userId={userId} userName={`${first_name} ${last_name}`} />
           </Route>
         </Switch>
       </Content>

@@ -5,13 +5,13 @@ import axios from 'axios';
 
 export default function Error({ error, refetch }) {
   const { status = '', data: { msg } } = (error || {}).response;
-  const refreshToken = async () => axios.post('/api/login').then(() => !!refetch && refetch());
+  const refreshToken = async () => await axios.post('/api/login').then(() => refetch());
 
   return (
     <Result
       title={status}
       subTitle={msg}
-      extra={status === 401
+      extra={status === 401 && refetch
         ? [<Button key="refresh" type="primary" onClick={refreshToken}>Refresh Token</Button>]
         : undefined}
     />

@@ -1,21 +1,34 @@
 import React from 'react';
-import { Layout, Spin, Tooltip } from 'antd';
-import { useParams, Link } from 'react-router-dom';
+import {
+  Layout, Spin, Tooltip, Tabs,
+} from 'antd';
+import {
+  useParams, useLocation, Link, Switch, Route, useHistory,
+} from 'react-router-dom';
 import useAxios from 'axios-hooks';
+import _ from 'lodash';
 import { RightOutlined } from '@ant-design/icons';
 
+import Error from '../error';
+import WebinarForm from './form';
+
 const { Header, Content } = Layout;
+const { TabPane } = Tabs;
+
+const Participants = () => <div>Participants</div>;
 
 export default function Webinar() {
   const { userId, webinarId } = useParams();
-  const [{ data = {}, loading, error }] = useAxios(
+  const { push } = useHistory();
+  const { pathname, search } = useLocation();
+  const [{ data = {}, loading, error }, refetchWebinar] = useAxios(
     { url: `/api/webinars/${webinarId}` }, { useCache: true },
   );
   const [{ data: userData = {} }] = useAxios(
     { url: `/api/users/${userId}` }, { useCache: true },
   );
 
-  if (loading && !data) {
+  if (loading && _.isEmpty(data)) {
     return (
       <Layout className="layout-container">
         <Content className="align-center">
@@ -25,11 +38,11 @@ export default function Webinar() {
     );
   }
 
-  if (error && !loading && !data) {
+  if (error) {
     return (
       <Layout className="layout-container">
         <Content className="align-center">
-          <h1>Error Fetching Webinar</h1>
+          <Error />
         </Content>
       </Layout>
     );
@@ -45,7 +58,7 @@ export default function Webinar() {
           {`${first_name} ${last_name}`}
         </Link>
         <div className="carrot-right">
-          <RightOutlined style={{ fontSize: 14 }} />
+          <RightOutlined />
         </div>
         <div className="meeting-topic">
           <Tooltip title={topic}>
@@ -55,7 +68,24 @@ export default function Webinar() {
         <small>Webinar</small>
       </Header>
       <Content>
-        {webinarId}
+        <Tabs
+          className="user-tabs"
+          type="card"
+          size="large"
+          activeKey={pathname}
+          onChange={(key) => push(key + (search || ''))}
+        >
+          <TabPane tab="Manage" key={`/users/${userId}/webinars/${webinarId}`} />
+          <TabPane tab="Participants" key={`/users/${userId}/webinars/${webinarId}/participants`} />
+        </Tabs>
+        <Switch>
+          <Route path="/users/:userId/webinars/:webinarId/participants">
+            <Participants />
+          </Route>
+          <Route>
+            <WebinarForm initialValues={data} refetch={refetchWebinar} />
+          </Route>
+        </Switch>
       </Content>
     </Layout>
   );

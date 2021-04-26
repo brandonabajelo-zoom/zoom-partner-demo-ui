@@ -90,6 +90,9 @@ export default function Reports() {
     );
   }
 
+  const filteredReports = (data.meetings || [])
+    .filter(({ topic }) => topic.toLowerCase().indexOf(query.toLowerCase()) > -1)
+
   return (
     <Layout className="layout-container edit">
       <Header className="header-flex">
@@ -121,7 +124,7 @@ export default function Reports() {
         <Table
           columns={columns}
           loading={loading && _.isEmpty(data.meetings)}
-          dataSource={data.meetings}
+          dataSource={filteredReports}
           rowKey="uuid"
           pagination={false}
           showSorterTooltip={false}

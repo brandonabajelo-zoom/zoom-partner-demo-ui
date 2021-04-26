@@ -1,5 +1,9 @@
 $zoomBlue: #2D8CFF;
 $white: #fff;
+$grey: grey;
+$red: red;
+$black: #000;
+$svgColor: rgba(0, 0, 0, 0.45);
 
 .component-container {
   margin: 20px 0px;
@@ -15,6 +19,11 @@ $white: #fff;
     font-size: 25px;
     font-weight: 500;
     margin-bottom: 20px;
+    > small {
+      color: $grey;
+      font-size: 18px;
+      margin-left: 10px;
+    }
   }
   .card-container {
     display: flex;
@@ -51,10 +60,82 @@ $white: #fff;
 
 .anticon.table-icon {
   > svg {
-    color: rgba(0, 0, 0, 0.45);
+    color: $svgColor;
     font-size: 18px;
     &:hover {
       color: $zoomBlue;
     }
   }
+}
+
+.anticon.table-info {
+  margin-left: 5px;
+  > svg {
+    color: $svgColor;
+    font-size: 15px;
+    &:hover {
+      color: $zoomBlue;
+    }
+  }
+}
+
+.join-url {
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  > div {
+    color: $black;
+    font-size: 16px;
+    align-items: center;
+    display: flex;
+    margin-right: 10px;
+    > span {
+      color: $grey;
+      font-size: 18px;
+      margin-left: 10px;
+    }
+  }
+}
+
+.ant-list-item {
+  .ant-list-item-meta {
+    .ant-list-item-meta-content {
+      .ant-list-item-meta-title, .ant-list-item-meta-avatar {
+        font-size: 16px;
+      }
+    }
+  }
+}
+
+.ant-list.ant-list-split.registrant-list {
+  margin-top: 20px;
+}
+
+.ant-btn.ant-btn-text.ant-btn-sm.approve-btn {
+  color: $zoomBlue;
+}
+
+.ant-btn.ant-btn-text.ant-btn-sm.deny-btn {
+  color: $red;
+}
+
+.ant-badge.ant-badge-status.ant-badge-not-a-wrapper.live-badge {
+  .ant-badge-status-dot.ant-badge-status-processing {
+    margin: 0px 0px 8px 10px;
+    width: 14px;
+    height: 14px;
+  }
+}
+
+#webinar-registration-url {
+  margin: 0px 10px;
+}
+
+#webinar-join-url {
+  margin: 0px 10px;
+}
+
+.copy-title {
+  color: $black;
+  font-size: 16px;
 }

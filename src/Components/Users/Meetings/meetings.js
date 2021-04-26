@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import useAxios from 'axios-hooks';
 import axios from 'axios';
 import { Button, Tooltip, Divider, Input } from 'antd';
-import { Link } from 'react-router-dom';
+import { Link, useParams } from 'react-router-dom';
 import {
   ReloadOutlined, PlusOutlined, AppstoreOutlined, BarsOutlined,
 } from '@ant-design/icons';
@@ -12,7 +12,8 @@ import Grid from './grid';
 import Table from './table';
 import Error from '../error';
 
-export default function UserMeetings({ userId, userName }) {
+export default function UserMeetings({ userName }) {
+  const { userId } = useParams();
   const [gridView, toggleGridView] = useState(false);
   const [query, setQuery] = useState('');
 
@@ -43,7 +44,9 @@ export default function UserMeetings({ userId, userName }) {
   return (
     <div className="component-container">
       <div className="flex-space-between">
-        <div className="component-header">Meetings</div>
+        <div className="component-header">
+          Meetings
+        </div>
         <div>
           <Tooltip title="Table View">
             <Button
@@ -61,24 +64,33 @@ export default function UserMeetings({ userId, userName }) {
             />
           </Tooltip>
           <Link to={`/users/${userId}/new_meeting`}>
-            <Button className="add-event" icon={<PlusOutlined />} type="primary">
+            <Button
+              className="add-event"
+              icon={<PlusOutlined />}
+              type="primary"
+            >
               Meeting
             </Button>
           </Link>
           <Tooltip title="Refresh Meetings">
-            <Button loading={loading} icon={<ReloadOutlined />} type="default" onClick={refetch} />
+            <Button
+              loading={loading}
+              icon={<ReloadOutlined />}
+              type="default"
+              onClick={refetch}
+            />
           </Tooltip>
         </div>
       </div>
-      {error &&  <Error error={error} refetch={refetch} />}
+      {error &&  <Error error={error} />}
       {!error && (
         <>
-        <Input
-          value={query}
-          onChange={e => setQuery(e.target.value)}
-          placeholder="Search Topics"
-        />
-        <Divider />
+          <Input
+            value={query}
+            onChange={e => setQuery(e.target.value)}
+            placeholder="Search Topics"
+          />
+          <Divider />
         </>
       )}
       {!error && gridView && <Grid {...componentProps} />}
@@ -88,6 +100,5 @@ export default function UserMeetings({ userId, userName }) {
 }
 
 UserMeetings.propTypes = {
-  userId: PropTypes.string.isRequired,
   userName: PropTypes.string.isRequired,
 };

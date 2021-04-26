@@ -3,7 +3,8 @@ import PropTypes from 'prop-types';
 import {
   Card, Tag, Popconfirm,
 } from 'antd';
-import { useHistory } from 'react-router-dom';
+import { useHistory, Link } from 'react-router-dom';
+import _ from 'lodash';
 import { DateTime } from 'luxon';
 import qs from 'query-string';
 import {
@@ -20,7 +21,9 @@ const renderId = (id) => (
 const renderStartTime = (time) => (
   <p className="card-field">
     Start Time:
-    <Tag color="blue">{DateTime.fromISO(time).toLocaleString(DateTime.DATETIME_MED)}</Tag>
+    <Tag color="blue">
+      {DateTime.fromISO(time).toLocaleString(DateTime.DATETIME_MED)}
+    </Tag>
   </p>
 );
 
@@ -37,12 +40,16 @@ export default function MeetingGrid({
         <Card
           style={{ width: '20%' }}
           key={uuid}
-          loading={loading && !data}
-          title={topic}
+          loading={loading && _.isEmpty(data)}
+          title={<Link to={`/users/${userId}/meetings/${id}`}>{topic}</Link>}
           hoverable
           actions={[
-            <VideoCameraOutlined onClick={() => push(`/websdk?${qs.stringify({ meetingNumber: id, userId, userName })}`)} />,
-            <SettingOutlined onClick={() => push(`/users/${userId}/meetings/${id}`)} />,
+            <VideoCameraOutlined
+              onClick={() => push(`/websdk?${qs.stringify({ meetingNumber: id, userId, userName })}`)}
+            />,
+            <SettingOutlined
+              onClick={() => push(`/users/${userId}/meetings/${id}`)}
+            />,
             <Popconfirm
               title="Are you sure you want to delete this meeting?"
               onConfirm={() => confirmDelete(id)}

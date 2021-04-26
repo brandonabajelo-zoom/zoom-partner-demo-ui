@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import useAxios from 'axios-hooks';
 import axios from 'axios';
 import { Button, Tooltip, Divider, Input } from 'antd';
-import { Link } from 'react-router-dom';
+import { Link, useParams } from 'react-router-dom';
 import {
   ReloadOutlined, PlusOutlined, AppstoreOutlined, BarsOutlined,
 } from '@ant-design/icons';
@@ -12,11 +12,12 @@ import Grid from './grid';
 import Table from './table';
 import Error from '../error';
 
-export default function UserWebinars({ userId, userName, userEmail }) {
+export default function UserWebinars({ userName, userEmail }) {
+  const { userId } = useParams();
   const [gridView, toggleGridView] = useState(false);
   const [query, setQuery] = useState('');
 
-  const [{ data = {}, loading, error }, refetchWebinars] = useAxios({ url: `/api/users/${userId}/webinars` });
+  const [{ data = {}, loading, error }, refetchWebinars] = useAxios(`/api/users/${userId}/webinars`);
 
   const confirmDelete = async (webinarId) => {
     await axios.delete(`/api/webinars/${webinarId}`).then(() => refetchWebinars());
@@ -60,24 +61,33 @@ export default function UserWebinars({ userId, userName, userEmail }) {
             />
           </Tooltip>
           <Link to={`/users/${userId}/new_webinar`}>
-            <Button className="add-event" icon={<PlusOutlined />} type="primary">
+            <Button
+              className="add-event"
+              icon={<PlusOutlined />}
+              type="primary"
+            >
               Webinar
             </Button>
           </Link>
           <Tooltip title="Refresh Webinars">
-            <Button loading={loading} icon={<ReloadOutlined />} type="default" onClick={refetchWebinars} />
+            <Button
+              loading={loading}
+              icon={<ReloadOutlined />}
+              type="default"
+              onClick={refetchWebinars}
+            />
           </Tooltip>
         </div>
       </div>
-      {error && <Error error={error} refetch={refetchWebinars} />}
+      {error && <Error error={error} />}
       {!error && (
         <>
-        <Input
-          value={query}
-          onChange={e => setQuery(e.target.value)}
-          placeholder="Search Topics"
-        />
-        <Divider />
+          <Input
+            value={query}
+            onChange={e => setQuery(e.target.value)}
+            placeholder="Search Topics"
+          />
+          <Divider />
         </>
       )}
       {!error && gridView && <Grid {...componentProps} />}
@@ -87,7 +97,6 @@ export default function UserWebinars({ userId, userName, userEmail }) {
 }
 
 UserWebinars.propTypes = {
-  userId: PropTypes.string.isRequired,
   userName: PropTypes.string.isRequired,
   userEmail: PropTypes.string.isRequired,
 };

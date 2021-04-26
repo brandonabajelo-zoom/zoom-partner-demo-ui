@@ -7,6 +7,8 @@ import Nav from './Components/Nav';
 import Home from './Components/Home';
 import Users from './Components/Users';
 import WebSDK from './Components/WebSDK';
+import Dashboard from './Components/Dashboard';
+import RefreshToken from './Components/Refresh';
 
 const { Header, Content } = Layout;
 
@@ -25,8 +27,14 @@ export default function App() {
           <Route path="/users">
             <Users />
           </Route>
+          <Route path="/dashboard">
+            <Dashboard />
+          </Route>
           <Route path="/websdk">
             <WebSDK />
+          </Route>
+          <Route path="/refresh">
+            <RefreshToken />
           </Route>
           <Route path="/">
             <Home />

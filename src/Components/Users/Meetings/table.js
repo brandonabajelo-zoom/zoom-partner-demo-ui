@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { Table, Tag, Popconfirm } from 'antd';
-import { useHistory } from 'react-router-dom';
+import { useHistory, Link } from 'react-router-dom';
 import { DateTime } from 'luxon';
 import _ from 'lodash';
 import qs from 'query-string';
@@ -13,12 +13,18 @@ export default function MeetingTable({
   data, userId, loading, confirmDelete, userName,
 }) {
   const { push } = useHistory();
+
   const columns = [
     {
       title: 'Topic',
       dataIndex: 'topic',
       key: 'topic',
       sorter: (a, b) => a.topic.localeCompare(b.topic),
+      render: (text, row) => (
+        <Link to={`/users/${userId}/meetings/${row.id}`}>
+          {text}
+        </Link>
+      ),
     },
     {
       title: 'Meeting ID',
@@ -76,7 +82,8 @@ export default function MeetingTable({
         </Popconfirm>
       )
     }
-  ]
+  ];
+
   return (
     <Table
       columns={columns}
@@ -84,6 +91,7 @@ export default function MeetingTable({
       loading={loading && _.isEmpty(data.meetings)}
       rowKey="id"
       pagination={false}
+      showSorterTooltip={false}
     />
   )
 }

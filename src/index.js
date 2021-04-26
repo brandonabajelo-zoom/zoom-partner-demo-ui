@@ -15,6 +15,23 @@ const apiHost = 'http://localhost:5000';
 axios.defaults.headers.common['Content-Type'] = 'application/json';
 axios.defaults.baseURL = apiHost;
 
+/**
+ * This interceptor listens for any 401 http error response
+ * and forces the user to refresh their JWT before being able to
+ * access other features of the application
+ * 
+ * https://github.com/axios/axios#interceptors
+ */
+axios.interceptors.response.use((response) => {
+  return response;
+}, (error) => {
+  if (error.response.status === 401) {
+    return window.location = '/refresh';
+  } else {
+    return Promise.reject(error);
+  }
+})
+
 configure({ cache: false });
 
 ReactDOM.render(

@@ -1,24 +1,13 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Result, Button } from 'antd';
-import axios from 'axios';
+import { Result } from 'antd';
 
-export default function Error({ error, refetch }) {
-  const { status = '', data: { msg } } = (error || {}).response;
-  const refreshToken = async () => await axios.post('/api/login').then(() => refetch());
+export default function Error({ error }) {
+  const { status = '', data = {} } = ((error || {}).response || {});
 
-  return (
-    <Result
-      title={status}
-      subTitle={msg}
-      extra={status === 401 && refetch
-        ? [<Button key="refresh" type="primary" onClick={refreshToken}>Refresh Token</Button>]
-        : undefined}
-    />
-  );
+  return <Result title={status} subTitle={data.msg} />
 }
 
 Error.propTypes = {
   error: PropTypes.objectOf(PropTypes.any).isRequired,
-  refetch: PropTypes.func.isRequired,
 };

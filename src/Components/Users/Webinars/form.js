@@ -18,12 +18,15 @@ const { Option } = Select;
 const { Item } = Form;
 
 const DEFAULT_INITIAL_VALUES = {
-  hour: 1, min: 0, timezone: Intl.DateTimeFormat().resolvedOptions().timeZone, start_time: moment(),
+  hour: 1,
+  min: 0,
+  timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
+  start_time: moment(),
 };
 
 export default function WebinarForm({ initialValues, refetch }) {
   const { userId, webinarId } = useParams();
-  const [formError, setFormError] = useState()
+  const [formError, setFormError] = useState();
   const [form] = Form.useForm();
   const { push } = useHistory();
 
@@ -40,8 +43,14 @@ export default function WebinarForm({ initialValues, refetch }) {
   );
 
   const formatData = (data) => {
+    setFormError();
+
     const {
-      hour, min, start_time: moment_start_time, auto_recording, approval_type, ...rest
+      hour, min,
+      start_time: moment_start_time,
+      auto_recording,
+      approval_type,
+      ...rest
     } = data;
 
     const submitData = {
@@ -49,7 +58,7 @@ export default function WebinarForm({ initialValues, refetch }) {
       start_time: DateTime.fromISO(moment_start_time.format('YYYY-MM-DDTHH:mm:ss')).toISO(),
       settings: {
         auto_recording: auto_recording ? 'cloud' : 'none',
-        approval_type: approval_type ? 0 : 2,
+        approval_type: approval_type ? 1 : 2,
       },
       ...rest,
     };
@@ -68,7 +77,9 @@ export default function WebinarForm({ initialValues, refetch }) {
   const handleEdit = async (data) => {
     const editData = formatData(data);
 
-    await executePatch({ data: editData }).then(() => !!refetch && refetch())
+    await executePatch({ data: editData })
+      .then(() => !!refetch && refetch())
+      .catch(err => setFormError(err));
   }
 
   const formInitialValues = (() => {
@@ -86,7 +97,7 @@ export default function WebinarForm({ initialValues, refetch }) {
         hour, min,
         start_time,
         auto_recording: auto_recording === 'cloud',
-        approval_type: approval_type === 0,
+        approval_type: approval_type === 1,
         ...rest,
       }
     }
@@ -96,7 +107,9 @@ export default function WebinarForm({ initialValues, refetch }) {
   return (
     <Layout className={webinarId ? 'layout-container edit' : 'layout-container'}>
       <Header className="header-flex">
-        <div>{webinarId ? 'Manage Webinar' : 'Schedule Webinar'}</div>
+        <div>
+          {webinarId ? 'Manage Webinar' : 'Schedule Webinar'}
+        </div>
       </Header>
       <Content className="form-content">
         {formError && <Error error={formError} />}
@@ -113,14 +126,18 @@ export default function WebinarForm({ initialValues, refetch }) {
           <Item
             label="Topic"
             name="topic"
-            rules={[{ required: true, message: 'Topic is required' }]}
+            rules={[{
+              required: true, message: 'Topic is required',
+            }]}
           >
             <Input />
           </Item>
           <Item
             label="Description"
             name="agenda"
-            rules={[{ max: 2000, message: 'Maximum length exceeded', type: 'string' }]}
+            rules={[{
+              max: 2000, message: 'Maximum length exceeded', type: 'string',
+            }]}
           >
             <TextArea
               placeholder="Add a webinar description"
@@ -137,10 +154,18 @@ export default function WebinarForm({ initialValues, refetch }) {
           <Item label="Duration">
             <Group compact>
               <Item name="hour">
-                <Input type="number" addonAfter="hr" min="0" />
+                <Input
+                  type="number"
+                  addonAfter="hr"
+                  min="0"
+                />
               </Item>
               <Item name="min">
-                <Input type="number" addonAfter="min" min="0" />
+                <Input
+                  type="number"
+                  addonAfter="min"
+                  min="0"
+                />
               </Item>
             </Group>
           </Item>
@@ -164,10 +189,18 @@ export default function WebinarForm({ initialValues, refetch }) {
           >
             <Input style={{ width: 300 }} placeholder="(optional)" />
           </Item>
-          <Item name="approval_type" label="Registration" valuePropName="checked">
+          <Item
+            name="approval_type"
+            label="Registration"
+            valuePropName="checked"
+          >
             <Checkbox>Required</Checkbox>
           </Item>
-          <Item name="auto_recording" label="Record Webinar" valuePropName="checked">
+          <Item
+            name="auto_recording"
+            label="Record"
+            valuePropName="checked"
+          >
             <Checkbox>Cloud Recording</Checkbox>
           </Item>
           <Item>
@@ -192,8 +225,7 @@ export default function WebinarForm({ initialValues, refetch }) {
   );
 }
 
-
 WebinarForm.propTypes = {
   initialValues: PropTypes.object,
   refetch: PropTypes.func,
-}
+};

@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import {
   Card, Tag, Popconfirm,
 } from 'antd';
-import { useHistory } from 'react-router-dom';
+import { useHistory, Link } from 'react-router-dom';
 import { DateTime } from 'luxon';
 import qs from 'query-string';
 import {
@@ -20,7 +20,9 @@ const renderId = (id) => (
 const renderStartTime = (time) => (
   <p className="card-field">
     Start Time:
-    <Tag color="blue">{DateTime.fromISO(time).toLocaleString(DateTime.DATETIME_MED)}</Tag>
+    <Tag color="blue">
+      {DateTime.fromISO(time).toLocaleString(DateTime.DATETIME_MED)}
+    </Tag>
   </p>
 );
 
@@ -28,6 +30,7 @@ export default function WebinarGrid({
   data, userId, loading, confirmDelete, userName, userEmail,
 }) {
   const { push } = useHistory();
+
   return (
     <div className="card-container">
       {(data.webinars || []).map(({
@@ -37,7 +40,7 @@ export default function WebinarGrid({
           style={{ width: '20%' }}
           key={uuid}
           loading={loading && !data}
-          title={topic}
+          title={<Link to={`/users/${userId}/webinars/${id}`}>{topic}</Link>}
           hoverable
           actions={[
             DateTime.fromISO(start_time).plus({ minutes: duration }) > DateTime.now()

@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import {
   Layout, Input, Form, Button, DatePicker, Select, Checkbox,
@@ -11,6 +11,8 @@ import _ from 'lodash';
 import useAxios from 'axios-hooks';
 import timezones from '../../../timezones';
 
+import Error from '../error';
+
 const { Header, Content } = Layout;
 const { TextArea, Group } = Input;
 const { Option } = Select;
@@ -22,6 +24,8 @@ const DEFAULT_INITIAL_VALUES = {
 
 export default function MeetingForm({ initialValues, refetch }) {
   const { userId, meetingId } = useParams();
+  const [formError, setFormError] = useState();
+
   const [form] = Form.useForm();
   const { push } = useHistory();
 
@@ -38,8 +42,13 @@ export default function MeetingForm({ initialValues, refetch }) {
   );
 
   const formatData = (data) => {
+    setFormError();
+
     const {
-      hour, min, start_time: moment_start_time, auto_recording, ...rest
+      hour, min,
+      start_time: moment_start_time,
+      auto_recording,
+      ...rest
     } = data;
 
     const submitData = {
@@ -58,13 +67,16 @@ export default function MeetingForm({ initialValues, refetch }) {
     const postData = formatData(data);
   
     await executePost({ data: postData })
-      .then(({ data: meetingData }) => push(`/users/${userId}/meetings/${meetingData.id}`));
+      .then(() => push(`/users/${userId}/meetings`))
+      .catch(err => setFormError(err));
   };
 
   const handleEdit = async (data) => {
     const editData = formatData(data);
     
-    await executePatch({ data: editData }).then(() => !!refetch && refetch())
+    await executePatch({ data: editData })
+      .then(() => !!refetch && refetch())
+      .catch(err => setFormError(err))
   }
 
   const formInitialValues = (() => {
@@ -79,7 +91,11 @@ export default function MeetingForm({ initialValues, refetch }) {
       const min = (hour - Math.floor(hour)) * 60;
       const start_time = moment(current_time);
       return {
-        hour, min, start_time, auto_recording: auto_recording === 'cloud', ...rest,
+        hour,
+        min,
+        start_time,
+        auto_recording: auto_recording === 'cloud',
+        ...rest,
       }
     }
     return DEFAULT_INITIAL_VALUES;
@@ -88,9 +104,12 @@ export default function MeetingForm({ initialValues, refetch }) {
   return (
     <Layout className={meetingId ? 'layout-container edit' : 'layout-container'}>
       <Header className="header-flex">
-        <div>{meetingId ? 'Manage Meeting' : 'Schedule Meeting'}</div>
+        <div>
+          {meetingId ? 'Manage Meeting' : 'Schedule Meeting'}
+        </div>
       </Header>
       <Content className="form-content">
+        {formError && <Error error={formError} />}
         <Form
           form={form}
           name="meetingForm"
@@ -111,7 +130,9 @@ export default function MeetingForm({ initialValues, refetch }) {
           <Item
             label="Description"
             name="agenda"
-            rules={[{ max: 2000, message: 'Maximum length exceeded', type: 'string' }]}
+            rules={[{
+              max: 2000, message: 'Maximum length exceeded', type: 'string',
+            }]}
           >
             <TextArea
               placeholder="Add a meeting description"
@@ -128,10 +149,18 @@ export default function MeetingForm({ initialValues, refetch }) {
           <Item label="Duration">
             <Group compact>
               <Item name="hour">
-                <Input type="number" addonAfter="hr" min="0" />
+                <Input
+                  type="number"
+                  addonAfter="hr"
+                  min="0"
+                />
               </Item>
               <Item name="min">
-                <Input type="number" addonAfter="min" min="0" />
+                <Input
+                  type="number"
+                  addonAfter="min"
+                  min="0"
+                />
               </Item>
             </Group>
           </Item>
@@ -155,7 +184,11 @@ export default function MeetingForm({ initialValues, refetch }) {
           >
             <Input style={{ width: 300 }} placeholder="(optional)" />
           </Item>
-          <Item name="auto_recording" label="Record Meeting" valuePropName="checked">
+          <Item
+            name="auto_recording"
+            label="Record Meeting"
+            valuePropName="checked"
+          >
             <Checkbox>Cloud Recording</Checkbox>
           </Item>
           <Item>
@@ -183,4 +216,4 @@ export default function MeetingForm({ initialValues, refetch }) {
 MeetingForm.propTypes = {
   initialValues: PropTypes.object,
   refetch: PropTypes.func,
-}
+};

@@ -3,7 +3,6 @@ import { useHistory } from 'react-router-dom';
 import { Spin } from 'antd';
 import qs from 'query-string';
 
-// eslint-disable-next-line
 declare var ZoomMtg
 
 ZoomMtg.preLoadWasm();
@@ -19,6 +18,7 @@ export default function WebSDK() {
     REACT_APP_ZOOM_API_KEY = '', REACT_APP_SIGNATURE_ENDPOINT = '',
   } = process.env;
 
+  // Meetings/Webinars with passcodes required will need to be entered manually on the screen
   const startMeeting = (signature) => {
     document.getElementById('zmmtg-root').style.display = 'block';
     ZoomMtg.init({
@@ -32,7 +32,6 @@ export default function WebSDK() {
           meetingNumber,
           userName,
           apiKey: REACT_APP_ZOOM_API_KEY,
-          // passWord,
           userEmail,
           success: (joinSuccess) => console.log('Meeting join success: ', joinSuccess),
           error: (joinError) => console.error('Error joining meeting: ', joinError),
@@ -46,10 +45,7 @@ export default function WebSDK() {
     const SIGNATURE_OPTIONS = {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        meetingNumber,
-        role: 1,
-      }),
+      body: JSON.stringify({ meetingNumber, role: 1 }),
     };
 
     fetch(REACT_APP_SIGNATURE_ENDPOINT, SIGNATURE_OPTIONS)

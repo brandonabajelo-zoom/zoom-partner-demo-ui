@@ -30,6 +30,11 @@ export default function Nav({ path }) {
           Users
         </Link>
       </Menu.Item>
+      <Menu.Item key="/dashboard">
+        <Link to="/dashboard">
+          Dashboard
+        </Link>
+      </Menu.Item>
       <Menu.Item className="nav-item-logo" disabled>
         Web SDK
         <VideoCameraFilled />

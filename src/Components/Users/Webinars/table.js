@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { Table, Tag, Popconfirm } from 'antd';
-import { useHistory } from 'react-router-dom';
+import { useHistory, Link } from 'react-router-dom';
 import { DateTime } from 'luxon';
 import _ from 'lodash';
 import qs from 'query-string';
@@ -20,6 +20,11 @@ export default function WebinarTable({
       dataIndex: 'topic',
       key: 'topic',
       sorter: (a, b) => a.topic.localeCompare(b.topic),
+      render: (text, row) => (
+        <Link to={`/users/${userId}/webinars/${row.id}`}>
+          {text}
+        </Link>
+      ),
     },
     {
       title: 'Webinar ID',
@@ -43,11 +48,12 @@ export default function WebinarTable({
       title: '',
       align: 'center',
       width: '5%',
-      render: (text, row) => DateTime.fromISO(row.start_time).plus({ minutes: row.duration }) > DateTime.now() ? (
-        <VideoCameraOutlined
-          className="table-icon"
-          onClick={() => push(`/websdk?${qs.stringify({ meetingNumber: row.id, userId, userName, userEmail })}`)}
-        />
+      render: (text, row) => DateTime.fromISO(row.start_time).plus({ minutes: row.duration }) > DateTime.now()
+        ? (
+          <VideoCameraOutlined
+            className="table-icon"
+            onClick={() => push(`/websdk?${qs.stringify({ meetingNumber: row.id, userId, userName, userEmail })}`)}
+          />
       ) : <Tag>Expired</Tag>,
     },
     {
@@ -86,6 +92,7 @@ export default function WebinarTable({
       loading={loading && _.isEmpty(data.webinars)}
       rowKey="id"
       pagination={false}
+      showSorterTooltip={false}
     />
   )
 }

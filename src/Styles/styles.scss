@@ -1,5 +1,6 @@
 $background: #F8F9FA !important;
 $zoomBlue: #2D8CFF;
+$grey: grey;
 
 body {
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
@@ -9,9 +10,8 @@ body {
   -moz-osx-font-smoothing: grayscale;
 
   background-color: $background;
-  height: 100%;
   overflow: auto;
-  margin-bottom: 20px;
+  margin-bottom: 40px;
 }
 
 code {
@@ -58,7 +58,7 @@ button {
   }
   h1 {
     display: flex;
-    color: grey;
+    color: $grey;
     font-size: 2.5em;
     margin-top: 25px;
   }
@@ -66,7 +66,7 @@ button {
 
 .layout-container {
   padding: 30px 60px 0px 60px;
-  margin-bottom: 20px;
+  margin-bottom: 40px;
   > .ant-layout-header {
     font-size: 30px;
     font-weight: 500;
@@ -79,13 +79,23 @@ button {
       align-items: center;
     }
     > small {
-      color: grey;
+      color: $grey;
       font-size: 18px;
     }
     > div > small {
-      color: grey;
+      color: $grey;
       font-size: 18px;
       margin-right: 10px;
+    }
+    > div {
+      display: flex;
+      > .carrot-right {
+        display: flex;
+        margin: 28px 10px 0px 10px;
+        .anticon {
+          font-size: 14px;
+        }
+      }
     }
     &.header-start {
       display: flex;

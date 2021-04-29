@@ -37,3 +37,32 @@ React sample application bootstrapped with [Create React App](https://github.com
 
 ![Screen Shot 2021-04-28 at 6 13 50 PM](https://user-images.githubusercontent.com/81645097/116490939-88713200-a84d-11eb-9f44-800964433763.png)
 
+## Features
+
+### Users
+* View active/pending users
+* Create/edit users
+* Update user settings (add features)
+
+### Webinars
+* View/edit webinars
+* Schedule new webinars
+* View webinar participants/registrants
+* Webinar registration (create/approve/deny registrants)
+* Start webinars via Web SDK
+
+### Meetings
+* View/edit meetings
+* Schedule new meetings
+* View meeting participants
+* Start meetings via Web SDK
+
+### Live Dashboard
+* View live meetings dashboard report
+* View live webinars dashboard report
+
+### Reports
+* View meeting/webinar reports
+
+### Cloud Recordings
+* View cloud recordings

@@ -33,7 +33,7 @@ React sample application bootstrapped with [Create React App](https://github.com
 
 `npm start` or `yarn start`
 
-6. Upon successful installation of the UI + API, you should be navigated to the `Zoom Developer Advocacy | Partner Demo App` landing page and you can begin exploring the capabilities of Zoom's api's and web sdks!
+6. Upon successful installation of the UI + API, you should be navigated to the landing page and you can begin exploring the capabilities of Zoom's api's and web sdks!
 
-![Screen Shot 2021-04-26 at 1 57 17 PM](https://user-images.githubusercontent.com/81645097/116149740-5b7b1e80-a697-11eb-8bec-60cf1eb4d8f3.png)
+![Screen Shot 2021-04-28 at 6 13 50 PM](https://user-images.githubusercontent.com/81645097/116490939-88713200-a84d-11eb-9f44-800964433763.png)
 

@@ -1,6 +1,6 @@
 # Zoom-Partner-Demo-UI
 
-React sample application bootstrapped with [Create React App](https://github.com/facebook/create-react-app) which utilizes the [Zoom Web SDK](https://marketplace.zoom.us/docs/sdk/native-sdks/web) and [Zoom-Partner-Demo-Api](https://github.com/brandonabajelo-zoom/zoom-partner-demo-api). Follow the installation guide on this api and start your api server before continuing here.
+Virtual Event sample application bootstrapped with [Create React App](https://github.com/facebook/create-react-app) that utilizes the [Zoom Web SDK](https://marketplace.zoom.us/docs/sdk/native-sdks/web) and [Zoom-Partner-Demo-Api](https://github.com/brandonabajelo-zoom/zoom-partner-demo-api). Follow the installation guide on the demo api before continuing here.
 
 ## Installation
 

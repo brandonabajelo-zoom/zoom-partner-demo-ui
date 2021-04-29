@@ -12,7 +12,8 @@ import _ from 'lodash';
 import { RightOutlined, CopyOutlined } from '@ant-design/icons';
 
 import Error from '../error';
-import WebinarForm from './form';
+import WebinarForm from '../Forms/webinar';
+import RegistrationForm from '../Forms/register';
 import Registrants from './registrants';
 import Participants from './participants';
 
@@ -156,6 +157,7 @@ export default function Webinar() {
               <TabPane tab="Manage" key={`/users/${userId}/webinars/${webinarId}`} />
               <TabPane tab="Participants" key={`/users/${userId}/webinars/${webinarId}/participants`} />
               <TabPane tab="Registrants" key={`/users/${userId}/webinars/${webinarId}/registrants`} />
+              <TabPane tab="Register" key={`/users/${userId}/webinars/${webinarId}/register`} />
             </Tabs>
             <Switch>
               <Route path="/users/:userId/webinars/:webinarId/participants">
@@ -163,6 +165,9 @@ export default function Webinar() {
               </Route>
               <Route path="/users/:userId/webinars/:webinarId/registrants">
                 <Registrants />
+              </Route>
+              <Route path="/users/:userId/webinars/:webinarId/register">
+                <RegistrationForm />
               </Route>
               <Route>
                 <WebinarForm initialValues={data} refetch={refetchWebinar} />

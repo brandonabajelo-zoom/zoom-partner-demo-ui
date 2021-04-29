@@ -2,14 +2,16 @@ import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import {
   Layout, Input, Form, Button, Radio, Select, Checkbox, Row, Col,
+  Drawer,
 } from 'antd';
 import { useParams } from 'react-router-dom';
-import { CheckOutlined } from '@ant-design/icons';
+import { CheckOutlined, InfoCircleOutlined } from '@ant-design/icons';
 import useAxios from 'axios-hooks';
-import timezones from '../../timezones';
-import Error from './error';
 
-const { Content } = Layout;
+import timezones from '../../../timezones';
+import Error from '../error';
+
+const { Header, Content } = Layout;
 const { Option } = Select;
 const { Item } = Form;
 const { Group } = Radio;
@@ -17,6 +19,7 @@ const { Group } = Radio;
 export default function EditUser({ initialValues, refetch }) {
   const { userId } = useParams();
   const [formError, setFormError] = useState();
+  const [drawerVisible, setVisible] = useState(false);
   const [form] = Form.useForm();
 
   useEffect(() => form.resetFields(), [initialValues, form]);
@@ -37,6 +40,14 @@ export default function EditUser({ initialValues, refetch }) {
 
   return (
     <Layout className="layout-container edit">
+      <Header>
+        <div className="component-header">
+          User
+          <div className="drawer-icon">
+            <InfoCircleOutlined onClick={() => setVisible(true)} />
+          </div>
+        </div> 
+      </Header>
       <Content>
         {formError && <Error error={formError} />}
         <Form
@@ -154,6 +165,22 @@ export default function EditUser({ initialValues, refetch }) {
           </div>
         </Form>
       </Content>
+      <Drawer
+        title="Zoom APIs -- https://api.zoom.us/v2"
+        closable={false}
+        onClose={() => setVisible(false)}
+        visible={drawerVisible}
+        width={400}
+      >
+        <h3>User</h3>
+        <hr />
+        <ul>
+          <li><h4>PATCH /users/:userId</h4></li>
+          <a href="https://marketplace.zoom.us/docs/api-reference/zoom-api/users/userupdate" target="_blank" rel="noreferrer">
+            https://marketplace.zoom.us/docs/api-reference/zoom-api/users/userupdate
+          </a>
+        </ul>
+      </Drawer>
     </Layout>
   );
 }
@@ -161,4 +188,4 @@ export default function EditUser({ initialValues, refetch }) {
 EditUser.propTypes = {
   initialValues: PropTypes.object,
   refetch: PropTypes.func.isRequired,
-}
+};

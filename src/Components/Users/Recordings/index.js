@@ -1,14 +1,17 @@
 import React, { useState } from 'react';
 import useAxios from 'axios-hooks';
 import {
-  Table, Tag, Divider, Input, DatePicker,
+  Table, Tag, Divider, Input, DatePicker, Button,
+  Tooltip, Drawer,
 } from 'antd';
 import { DateTime } from 'luxon';
 import moment from 'moment'
 import _ from 'lodash';
 import qs from 'query-string';
 import { useParams } from 'react-router-dom';
-import { PlayCircleOutlined } from '@ant-design/icons';
+import {
+  PlayCircleOutlined, RightOutlined, ReloadOutlined, InfoCircleOutlined,
+} from '@ant-design/icons';
 
 import Error from '../error';
 
@@ -18,12 +21,16 @@ const apiDateFormat = 'YYYY-MM-DD';
 
 export default function Recordings() {
   const { userId } = useParams();
+  const [nextPageToken, setNextPageToken] = useState('');
   const [query, setQuery] = useState('');
+  const [drawerVisible, setVisible] = useState(false);
   const [dateRange, setDateRange] = useState([moment().subtract(7, 'd'), moment()]);
-  const [{ data = {}, loading, error }] = useAxios(`/api/users/${userId}/recordings?${qs.stringify({
+
+  const [{ data = {}, loading, error }, refetch] = useAxios(`/api/users/${userId}/recordings?${qs.stringify(_.pickBy({
     from: dateRange[0].format(apiDateFormat),
     to: dateRange[1].format(apiDateFormat),
-  })}`);
+    next_page_token: nextPageToken
+  }))}`);
 
   const columns = [
     {
@@ -61,8 +68,21 @@ export default function Recordings() {
 
   return (
     <div className="component-container">
-      <div className="component-header">
-        Cloud Recordings
+      <div className="flex-space-between">
+        <div className="component-header">
+          Cloud Recordings
+          <span className="drawer-icon">
+            <InfoCircleOutlined onClick={() => setVisible(true)} />
+          </span>
+        </div>
+        <Tooltip title="Refresh Recordings">
+          <Button
+            loading={loading}
+            icon={<ReloadOutlined />}
+            type="default"
+            onClick={refetch}
+          />
+        </Tooltip>
       </div>
       <div className="flex-space-between">
         <RangePicker
@@ -87,6 +107,30 @@ export default function Recordings() {
         loading={loading && _.isEmpty(data.meetings)}
         showSorterTooltip={false}
       />
+      {data.page_size < data.total_records && (
+        <div className="pagination-btn">
+          <Button
+            onClick={() => setNextPageToken(data.next_page_token)}
+            size="small" icon={<RightOutlined />}
+          />
+        </div> 
+      )}
+      <Drawer
+        title="Zoom APIs -- https://api.zoom.us/v2"
+        closable={false}
+        onClose={() => setVisible(false)}
+        visible={drawerVisible}
+        width={400}
+      >
+        <h3>Cloud Recordings</h3>
+        <hr />
+        <ul>
+          <li><h4>GET /users/:userId/recordings</h4></li>
+          <a href="https://marketplace.zoom.us/docs/api-reference/zoom-api/cloud-recording/recordingslist" target="_blank" rel="noreferrer">
+            https://marketplace.zoom.us/docs/api-reference/zoom-api/cloud-recording/recordingslist
+          </a>
+        </ul>
+      </Drawer>
     </div>
   );
 }

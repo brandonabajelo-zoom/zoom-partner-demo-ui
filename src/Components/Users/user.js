@@ -1,6 +1,6 @@
-import React from 'react';
+import React, { useState } from 'react';
 import {
-  Layout, Descriptions, Badge, Tag, Spin, Tabs, Tooltip,
+  Layout, Descriptions, Badge, Tag, Spin, Tabs, Tooltip, Drawer,
 } from 'antd';
 import {
   useParams, useLocation, Route, Switch, useHistory, Link,
@@ -9,13 +9,14 @@ import useAxios from 'axios-hooks';
 import _ from 'lodash';
 import qs from 'query-string';
 import { DateTime } from 'luxon';
-import { VideoCameraOutlined } from '@ant-design/icons';
+import { VideoCameraOutlined, InfoCircleOutlined } from '@ant-design/icons';
 
-import UserForm from './editUserForm';
+import EditUser from './Forms/editUser';
 import UserMeetings from './Meetings/meetings';
 import UserWebinars from './Webinars/webinars';
 import UserRecordings from './Recordings';
 import UserReports from './Reports';
+import UserSettings from './Settings';
 import Error from './error';
 
 const { Header, Content } = Layout;
@@ -38,6 +39,7 @@ const itemStyles = {
 
 export default function User() {
   const { userId } = useParams();
+  const [drawerVisible, setVisible] = useState(false);
   const { pathname, search } = useLocation();
   const { push } = useHistory();
 
@@ -75,7 +77,12 @@ export default function User() {
   return (
     <Layout className="layout-container">
       <Header className="header-flex">
-        <div>{`${first_name} ${last_name}`}</div>
+        <div>
+          {`${first_name} ${last_name}`}
+          <div className="drawer-icon">
+            <InfoCircleOutlined onClick={() => setVisible(true)} />
+          </div>
+        </div>
         <small>{email}</small>
       </Header>
       <Content>
@@ -115,13 +122,14 @@ export default function User() {
           onChange={(key) => push(key + (search || ''))}
         >
           <TabPane tab="User" key={`/users/${userId}`} />
+          <TabPane tab="Features" key={`/users/${userId}/features`} />
           <TabPane tab="Meetings" key={`/users/${userId}/meetings`} />
           <TabPane tab="Webinars" key={`/users/${userId}/webinars`} />
           <TabPane tab="Cloud Recordings" key={`/users/${userId}/recordings`} />
-          <TabPane tab="Meeting Reports" key={`/users/${userId}/meeting_reports`} />
+          <TabPane tab="Reports" key={`/users/${userId}/reports`} />
         </Tabs>
         <Switch>
-          <Route path="/users/:userId/meeting_reports">
+          <Route path="/users/:userId/reports">
             <UserReports />
           </Route>
           <Route path="/users/:userId/recordings">
@@ -137,11 +145,30 @@ export default function User() {
           <Route path="/users/:userId/meetings">
             <UserMeetings userName={`${first_name} ${last_name}`} />
           </Route>
+          <Route path="/users/:userId/features">
+            <UserSettings />
+          </Route>
           <Route>
-            <UserForm initialValues={data} refetch={refetch} />
+            <EditUser initialValues={data} refetch={refetch} />
           </Route>
         </Switch>
       </Content>
+      <Drawer
+        title="Zoom APIs -- https://api.zoom.us/v2"
+        closable={false}
+        onClose={() => setVisible(false)}
+        visible={drawerVisible}
+        width={400}
+      >
+        <h3>User</h3>
+        <hr />
+        <ul>
+          <li><h4>GET /users/:userId</h4></li>
+          <a href="https://marketplace.zoom.us/docs/api-reference/zoom-api/users/user" target="_blank" rel="noreferrer">
+            https://marketplace.zoom.us/docs/api-reference/zoom-api/users/user
+          </a>
+        </ul>
+      </Drawer>
     </Layout>
   );
 }

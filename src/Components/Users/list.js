@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import {
   Table, Tag, Layout, Button, Radio, Input, Divider, Tooltip,
-  Popconfirm,
+  Popconfirm, Drawer,
 } from 'antd';
 import { Link, useHistory } from 'react-router-dom';
 import _ from 'lodash';
@@ -12,7 +12,7 @@ import Error from './error';
 import axios from 'axios';
 import {
   ReloadOutlined, PlusOutlined, DeleteOutlined, MinusCircleOutlined,
-  QuestionCircleOutlined, InfoCircleOutlined
+  QuestionCircleOutlined, InfoCircleOutlined, RightOutlined,
 } from '@ant-design/icons';
 
 const { Header, Content } = Layout;
@@ -38,9 +38,13 @@ const deleteTooltip = (
 
 export default function UsersList() {
   const [status, setStatus] = useState('active');
+  const [nextPageToken, setNextPageToken] = useState('');
+  const [drawerVisible, setVisible] = useState(false);
   const [query, setQuery] = useState('');
   const { push } = useHistory();
-  const [{ data = {}, loading, error }, refetchUsers] = useAxios(`/api/users?${qs.stringify({ status })}`);
+  const [
+    { data = {}, loading, error }, refetchUsers,
+  ] = useAxios(`/api/users?${qs.stringify({ status, next_page_token: nextPageToken })}`);
 
   const confirmDelete = async (deleteId) => {
     await axios.delete(`/api/users/${deleteId}?${qs.stringify({ action: 'delete' })}`)
@@ -181,7 +185,12 @@ export default function UsersList() {
   return (
     <Layout className="layout-container">
       <Header className="flex-space-between">
-        <div className="component-header">Users</div>
+        <div className="component-header">
+          Users
+          <div className="drawer-icon">
+            <InfoCircleOutlined onClick={() => setVisible(true)} />
+          </div>
+        </div>
         <div>
           <Button
             className="add-event"
@@ -221,7 +230,31 @@ export default function UsersList() {
           loading={loading && _.isEmpty(data.users)}
           showSorterTooltip={false}
         />
+        {data.page_size < data.total_records && (
+          <div className="pagination-btn">
+            <Button
+              onClick={() => setNextPageToken(data.next_page_token)}
+              size="small" icon={<RightOutlined />}
+            />
+          </div> 
+        )}
       </Content>
+      <Drawer
+        title="Zoom APIs -- https://api.zoom.us/v2"
+        closable={false}
+        onClose={() => setVisible(false)}
+        visible={drawerVisible}
+        width={400}
+      >
+        <h3>Users</h3>
+        <hr />
+        <ul>
+          <li><h4>GET /users</h4></li>
+          <a href="https://marketplace.zoom.us/docs/api-reference/zoom-api/users/users" target="_blank" rel="noreferrer">
+            https://marketplace.zoom.us/docs/api-reference/zoom-api/users/users
+          </a>
+        </ul>
+      </Drawer>
     </Layout>
   );
 }

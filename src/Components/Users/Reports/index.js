@@ -1,14 +1,14 @@
 import React, { useState } from 'react';
 import useAxios from 'axios-hooks';
 import {
-  Table, Tag, Divider, Input, Layout, Tooltip, Button, DatePicker,
+  Table, Tag, Divider, Input, Layout, Tooltip, Button, DatePicker, Drawer,
 } from 'antd';
 import { DateTime } from 'luxon';
 import moment from 'moment'
 import qs from 'query-string';
 import _ from 'lodash';
 import { useParams } from 'react-router-dom';
-import { ReloadOutlined, InfoCircleOutlined } from '@ant-design/icons';
+import { ReloadOutlined, InfoCircleOutlined, RightOutlined } from '@ant-design/icons';
 
 import Error from '../error';
 
@@ -73,12 +73,16 @@ const columns = [
 
 export default function Reports() {
   const { userId } = useParams();
+  const [nextPageToken, setNextPageToken] = useState('');
   const [query, setQuery] = useState('');
+  const [drawerVisible, setVisible] = useState(false);
   const [dateRange, setDateRange] = useState([moment().subtract(7, 'd'), moment()]);
-  const [{ data = {}, loading, error }, refetch] = useAxios(`/api/users/${userId}/meetings/report?${qs.stringify({
+
+  const [{ data = {}, loading, error }, refetch] = useAxios(`/api/users/${userId}/meetings/report?${qs.stringify(_.pickBy({
     from: dateRange[0].format(apiDateFormat),
     to: dateRange[1].format(apiDateFormat),
-  })}`);
+    next_page_token: nextPageToken
+  }))}`);
 
   if (error) {
     return (
@@ -93,7 +97,12 @@ export default function Reports() {
   return (
     <Layout className="layout-container edit">
       <Header className="header-flex">
-        <div>Meeting Reports</div>
+        <div>
+          Reports
+          <span className="drawer-icon">
+            <InfoCircleOutlined onClick={() => setVisible(true)} />
+          </span>
+        </div>
         <Tooltip title="Refresh Reports">
           <Button
             loading={loading}
@@ -127,7 +136,31 @@ export default function Reports() {
           pagination={false}
           showSorterTooltip={false}
         />
+        {data.page_size < data.total_records && (
+          <div className="pagination-btn">
+            <Button
+              onClick={() => setNextPageToken(data.next_page_token)}
+              size="small" icon={<RightOutlined />}
+            />
+          </div> 
+        )}
       </Content>
+      <Drawer
+        title="Zoom APIs -- https://api.zoom.us/v2"
+        closable={false}
+        onClose={() => setVisible(false)}
+        visible={drawerVisible}
+        width={400}
+      >
+        <h3>Reports</h3>
+        <hr />
+        <ul>
+          <li><h4>GET /report/users/:userId/meetings</h4></li>
+          <a href="https://marketplace.zoom.us/docs/api-reference/zoom-api/reports/reportmeetings" target="_blank" rel="noreferrer">
+            https://marketplace.zoom.us/docs/api-reference/zoom-api/reports/reportmeetings
+          </a>
+        </ul>
+      </Drawer>
     </Layout>
-  )
+  );
 }

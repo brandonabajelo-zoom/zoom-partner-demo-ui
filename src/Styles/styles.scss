@@ -1,6 +1,7 @@
 $background: #F8F9FA !important;
 $zoomBlue: #2D8CFF;
 $grey: grey;
+$black: #000;
 
 body {
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
@@ -51,16 +52,27 @@ button {
   width: 50%;
   margin-bottom: 20px;
   flex-direction: column;
-  .logo {
-    margin-top: 25vh;
-    max-width: 30vw;
-    height: auto;
-  }
   h1 {
     display: flex;
+    color: $black;
+    font-size: 5.5em;
+    margin-top: 25vh;
+    > .anticon {
+      margin-left: 20px;
+    }
+  }
+  .logo {
+    max-width: 200px;
+    height: auto;
+  }
+  h4 {
+    display: flex;
+    align-items: center;
     color: $grey;
-    font-size: 2.5em;
-    margin-top: 25px;
+    .logo {
+      max-width: 250px;
+      height: auto;
+    }
   }
 }
 
@@ -143,13 +155,10 @@ button {
   }
 }
 
-.ant-menu-item.nav-item-logo.ant-menu-item-disabled {
-  float: right;
-  cursor: default;
+.drawer-icon {
+  margin-left: 10px;
   > .anticon {
-    font-size: 22px;
-    margin-left: 10px;
-    pointer-events: none;
+    font-size: 18px;
   }
 }
 

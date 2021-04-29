@@ -3,10 +3,13 @@ import useAxios from 'axios-hooks';
 import { useParams } from 'react-router-dom';
 import { DateTime } from 'luxon';
 import _ from 'lodash';
+import qs from 'query-string';
 import {
-  List, Layout, Tooltip, Button, Input, Divider, Tag,
+  List, Layout, Tooltip, Button, Input, Divider, Tag, Drawer,
 } from 'antd';
-import { UserOutlined, ReloadOutlined, FieldTimeOutlined } from '@ant-design/icons';
+import {
+  UserOutlined, ReloadOutlined, FieldTimeOutlined, RightOutlined, InfoCircleOutlined,
+} from '@ant-design/icons';
 
 import Error from '../error';
 
@@ -15,9 +18,13 @@ const { Item } = List;
 
 export default function Participants() {
   const { webinarId } = useParams();
+  const [nextPageToken, setNextPageToken] = useState('');
+  const [drawerVisible, setVisible] = useState(false);
   const [query, setQuery] = useState('')
 
-  const [{ data = {}, loading, error }, refetch] = useAxios(`/api/webinars/report/${webinarId}/participants`);
+  const [
+    { data = {}, loading, error }, refetch,
+  ] = useAxios(`/api/webinars/report/${webinarId}/participants?${qs.stringify(_.pickBy({ next_page_token: nextPageToken }))}`);
 
   if (error ) {
     return (
@@ -35,7 +42,12 @@ export default function Participants() {
   return (
     <Layout className="layout-container edit">
       <Header className="header-flex">
-        <div>{`Participants (${uniqueParticipants.length})`}</div>
+        <div>
+          {`Participants (${uniqueParticipants.length})`}
+          <span className="drawer-icon">
+            <InfoCircleOutlined onClick={() => setVisible(true)} />
+          </span>
+        </div>
         <Tooltip title="Refresh Participants">
           <Button
             loading={loading}
@@ -87,7 +99,31 @@ export default function Participants() {
             </Item>
           )}
         />
+        {data.page_size < data.total_records && (
+          <div className="pagination-btn">
+            <Button
+              onClick={() => setNextPageToken(data.next_page_token)}
+              size="small" icon={<RightOutlined />}
+            />
+          </div> 
+        )}
       </Content>
+      <Drawer
+        title="Zoom APIs -- https://api.zoom.us/v2"
+        closable={false}
+        onClose={() => setVisible(false)}
+        visible={drawerVisible}
+        width={400}
+      >
+        <h3>Reports</h3>
+        <hr />
+        <ul>
+          <li><h4>GET /report/webinars/:webinarId/participants</h4></li>
+          <a href="https://marketplace.zoom.us/docs/api-reference/zoom-api/reports/reportwebinarparticipants" target="_blank" rel="noreferrer">
+            https://marketplace.zoom.us/docs/api-reference/zoom-api/reports/reportwebinarparticipants
+          </a>
+        </ul>
+      </Drawer>
     </Layout>
   );
 }

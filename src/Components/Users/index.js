@@ -3,9 +3,9 @@ import { Switch, Route } from 'react-router-dom';
 
 import List from './list';
 import User from './user';
-import AddUser from './addUserForm';
-import MeetingForm from './Meetings/form';
-import WebinarForm from './Webinars/form';
+import AddUser from './Forms/addUser';
+import MeetingForm from './Forms/meeting';
+import WebinarForm from './Forms/webinar';
 import Meeting from './Meetings/meeting';
 import Webinar from './Webinars/webinar';
 

@@ -9,7 +9,7 @@ import useAxios from 'axios-hooks';
 import _ from 'lodash';
 import { RightOutlined, CopyOutlined } from '@ant-design/icons';
 
-import MeetingForm from './form';
+import MeetingForm from '../Forms/meeting';
 import Participants from './participants';
 import Error from '../error';
 

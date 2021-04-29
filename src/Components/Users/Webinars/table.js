@@ -1,16 +1,18 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Table, Tag, Popconfirm } from 'antd';
+import { Table, Tag, Popconfirm, Button } from 'antd';
 import { useHistory, Link } from 'react-router-dom';
 import { DateTime } from 'luxon';
 import _ from 'lodash';
 import qs from 'query-string';
 import {
   QuestionCircleOutlined, DeleteOutlined, SettingOutlined, VideoCameraOutlined,
+  RightOutlined,
 } from '@ant-design/icons';
 
 export default function WebinarTable({
   data, userId, userName, loading, confirmDelete, userEmail,
+  showPagination, setNextPageToken,
 }) {
   const { push } = useHistory();
 
@@ -86,14 +88,24 @@ export default function WebinarTable({
   ]
 
   return (
-    <Table
-      columns={columns}
-      dataSource={data.webinars}
-      loading={loading && _.isEmpty(data.webinars)}
-      rowKey="id"
-      pagination={false}
-      showSorterTooltip={false}
-    />
+    <>
+      <Table
+        columns={columns}
+        dataSource={data.webinars}
+        loading={loading && _.isEmpty(data.webinars)}
+        rowKey="id"
+        pagination={false}
+        showSorterTooltip={false}
+      />
+      {showPagination && (
+        <div className="pagination-btn">
+          <Button
+            onClick={() => setNextPageToken(data.next_page_token)}
+            size="small" icon={<RightOutlined />}
+          />
+        </div>
+      )}
+    </>
   )
 }
 

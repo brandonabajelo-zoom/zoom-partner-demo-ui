@@ -2,9 +2,8 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { Menu } from 'antd';
 import { Link } from 'react-router-dom';
-import { VideoCameraFilled } from '@ant-design/icons';
 
-import SideNavLogo from '../Images/zoom.svg';
+import { HomeOutlined, UserOutlined, WifiOutlined } from '@ant-design/icons';
 
 const pathAsKeys = (path) => {
   if (!path || path === '/') {
@@ -20,24 +19,20 @@ const pathAsKeys = (path) => {
 export default function Nav({ path }) {
   return (
     <Menu mode="horizontal" defaultSelectedKeys={['/']} selectedKeys={pathAsKeys(path)}>
-      <Menu.Item key="/">
+      <Menu.Item key="/" icon={<HomeOutlined />}>
         <Link to="/">
-          <img className="navbar-logo" src={SideNavLogo} alt="" />
+          Home
         </Link>
       </Menu.Item>
-      <Menu.Item key="/users">
+      <Menu.Item key="/users" icon={<UserOutlined />}>
         <Link to="/users">
           Users
         </Link>
       </Menu.Item>
-      <Menu.Item key="/dashboard">
+      <Menu.Item key="/dashboard" icon={<WifiOutlined />}>
         <Link to="/dashboard">
           Dashboard
         </Link>
-      </Menu.Item>
-      <Menu.Item className="nav-item-logo" disabled>
-        Web SDK
-        <VideoCameraFilled />
       </Menu.Item>
     </Menu>
   );

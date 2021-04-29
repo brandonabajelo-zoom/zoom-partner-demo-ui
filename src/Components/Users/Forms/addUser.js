@@ -1,11 +1,12 @@
 import React, { useState } from 'react';
 import {
-  Layout, Input, Form, Button, Radio,
+  Layout, Input, Form, Button, Radio, Drawer,
 } from 'antd';
 import { useHistory, Link } from 'react-router-dom';
-import { CheckOutlined } from '@ant-design/icons';
+import { CheckOutlined, InfoCircleOutlined } from '@ant-design/icons';
 import useAxios from 'axios-hooks';
-import Error from './error';
+
+import Error from '../error';
 
 const { Header, Content } = Layout;
 const { Item } = Form;
@@ -13,13 +14,14 @@ const { Group } = Radio;
 
 export default function AddUser() {
   const [formError, setFormError] = useState();
+  const [drawerVisible, setVisible] = useState(false);
   const [form] = Form.useForm();
   const { push } = useHistory();
 
   const [{ loading }, executePost] = useAxios(
     { url: '/api/users/add', method: 'POST'},
     { manual: true },
-  )
+  );
 
   const handleSave = async (formData) => {
     setFormError();
@@ -33,7 +35,12 @@ export default function AddUser() {
   return (
     <Layout className="layout-container">
       <Header className="header-flex">
-        <div>Add User</div>
+        <div>
+          Add User
+          <div className="drawer-icon">
+            <InfoCircleOutlined onClick={() => setVisible(true)} />
+          </div>
+        </div>
       </Header>
       <Content className="form-content">
         {formError && <Error error={formError} />}
@@ -91,6 +98,22 @@ export default function AddUser() {
           </div>
         </Form>
       </Content>
+      <Drawer
+        title="Zoom APIs -- https://api.zoom.us/v2"
+        closable={false}
+        onClose={() => setVisible(false)}
+        visible={drawerVisible}
+        width={400}
+      >
+        <h3>Users</h3>
+        <hr />
+        <ul>
+          <li><h4>POST /users</h4></li>
+          <a href="https://marketplace.zoom.us/docs/api-reference/zoom-api/users/usercreate" target="_blank" rel="noreferrer">
+            https://marketplace.zoom.us/docs/api-reference/zoom-api/users/usercreate
+          </a>
+        </ul>
+      </Drawer>
     </Layout>
   );
 }

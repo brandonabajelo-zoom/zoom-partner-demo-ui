@@ -1,16 +1,16 @@
 import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import {
-  Layout, Input, Form, Button, DatePicker, Select, Checkbox,
+  Layout, Input, Form, Button, DatePicker, Select, Checkbox, Drawer,
 } from 'antd';
 import { useParams, useHistory, Link } from 'react-router-dom';
-import { CheckOutlined } from '@ant-design/icons';
 import { DateTime } from 'luxon';
 import moment from 'moment';
 import _ from 'lodash';
 import useAxios from 'axios-hooks';
-import timezones from '../../../timezones';
+import { CheckOutlined, InfoCircleOutlined } from '@ant-design/icons';
 
+import timezones from '../../../timezones';
 import Error from '../error';
 
 const { Header, Content } = Layout;
@@ -25,6 +25,7 @@ const DEFAULT_INITIAL_VALUES = {
 export default function MeetingForm({ initialValues, refetch }) {
   const { userId, meetingId } = useParams();
   const [formError, setFormError] = useState();
+  const [drawerVisible, setVisible] = useState(false);
 
   const [form] = Form.useForm();
   const { push } = useHistory();
@@ -106,6 +107,9 @@ export default function MeetingForm({ initialValues, refetch }) {
       <Header className="header-flex">
         <div>
           {meetingId ? 'Manage Meeting' : 'Schedule Meeting'}
+          <div className="drawer-icon">
+            <InfoCircleOutlined onClick={() => setVisible(true)} />
+          </div>
         </div>
       </Header>
       <Content className="form-content">
@@ -125,7 +129,7 @@ export default function MeetingForm({ initialValues, refetch }) {
             name="topic"
             rules={[{ required: true, message: 'Topic is required' }]}
           >
-            <Input />
+            <Input placeholder="Meeting topic" />
           </Item>
           <Item
             label="Description"
@@ -209,6 +213,34 @@ export default function MeetingForm({ initialValues, refetch }) {
           </Item>
         </Form>
       </Content>
+      <Drawer
+        title="Zoom APIs -- https://api.zoom.us/v2"
+        closable={false}
+        onClose={() => setVisible(false)}
+        visible={drawerVisible}
+        width={400}
+      >
+        <h3>Meetings</h3>
+        <hr />
+        <ul>
+          {!meetingId && (
+            <>
+              <li><h4>POST /users/:userId/meetings</h4></li>
+              <a href="https://marketplace.zoom.us/docs/api-reference/zoom-api/meetings/meetingcreate" target="_blank" rel="noreferrer">
+                https://marketplace.zoom.us/docs/api-reference/zoom-api/meetings/meetingcreate
+              </a>
+            </>
+          )}
+          {meetingId && (
+            <>
+              <li><h4>PATCH /users/:userId/meetings</h4></li>
+              <a href="https://marketplace.zoom.us/docs/api-reference/zoom-api/meetings/meetingupdate" target="_blank" rel="noreferrer">
+                https://marketplace.zoom.us/docs/api-reference/zoom-api/meetings/meetingupdate
+              </a>
+            </>
+          )}
+        </ul>
+      </Drawer>
     </Layout>
   );
 }

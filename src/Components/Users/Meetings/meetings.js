@@ -2,23 +2,23 @@ import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import useAxios from 'axios-hooks';
 import axios from 'axios';
-import { Button, Tooltip, Divider, Input } from 'antd';
+import qs from 'query-string';
+import _ from 'lodash';
+import { Button, Tooltip, Divider, Input, Drawer } from 'antd';
 import { Link, useParams } from 'react-router-dom';
-import {
-  ReloadOutlined, PlusOutlined, AppstoreOutlined, BarsOutlined,
-} from '@ant-design/icons';
+import { ReloadOutlined, PlusOutlined, InfoCircleOutlined } from '@ant-design/icons';
 
-import Grid from './grid';
 import Table from './table';
 import Error from '../error';
 
 export default function UserMeetings({ userName }) {
   const { userId } = useParams();
-  const [gridView, toggleGridView] = useState(false);
+  const [nextPageToken, setNextPageToken] = useState('');
+  const [drawerVisible, setVisible] = useState(false);
   const [query, setQuery] = useState('');
 
   const [{ data = {}, loading, error }, refetch] = useAxios(
-    { url: `/api/users/${userId}/meetings` },
+    { url: `/api/users/${userId}/meetings?${qs.stringify(_.pickBy({ next_page_token: nextPageToken }))}` },
   );
 
   const confirmDelete = async (meetingId) => {
@@ -33,12 +33,14 @@ export default function UserMeetings({ userName }) {
     }
   })();
 
-  const componentProps = {
+  const tableProps = {
     data: filteredData,
     userName,
     confirmDelete,
     loading,
     userId,
+    setNextPageToken,
+    showPagination: data.page_size < data.total_records,
   };
 
   return (
@@ -46,23 +48,11 @@ export default function UserMeetings({ userName }) {
       <div className="flex-space-between">
         <div className="component-header">
           Meetings
+          <span className="drawer-icon">
+            <InfoCircleOutlined onClick={() => setVisible(true)} />
+          </span>
         </div>
         <div>
-          <Tooltip title="Table View">
-            <Button
-              icon={<BarsOutlined />}
-              type={!gridView ? 'primary' : 'default'}
-              onClick={() => toggleGridView(false)}
-            />
-          </Tooltip>
-          <Tooltip title="Grid View">
-            <Button
-              className="add-event"
-              icon={<AppstoreOutlined />}
-              type={gridView ? 'primary' : 'default'}
-              onClick={() => toggleGridView(true)}
-            />
-          </Tooltip>
           <Link to={`/users/${userId}/new_meeting`}>
             <Button
               className="add-event"
@@ -91,10 +81,25 @@ export default function UserMeetings({ userName }) {
             placeholder="Search Topics"
           />
           <Divider />
+          <Table {...tableProps} />
         </>
       )}
-      {!error && gridView && <Grid {...componentProps} />}
-      {!error && !gridView && <Table {...componentProps} />}
+      <Drawer
+        title="Zoom APIs -- https://api.zoom.us/v2"
+        closable={false}
+        onClose={() => setVisible(false)}
+        visible={drawerVisible}
+        width={400}
+      >
+        <h3>Meetings</h3>
+        <hr />
+        <ul>
+          <li><h4>GET /users/:userId/meetings</h4></li>
+          <a href="https://marketplace.zoom.us/docs/api-reference/zoom-api/meetings/meetings" target="_blank" rel="noreferrer">
+            https://marketplace.zoom.us/docs/api-reference/zoom-api/meetings/meetings
+          </a>
+        </ul>
+      </Drawer>
     </div>
   );
 }

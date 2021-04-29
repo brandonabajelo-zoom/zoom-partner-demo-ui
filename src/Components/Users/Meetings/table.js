@@ -1,16 +1,17 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Table, Tag, Popconfirm } from 'antd';
+import { Table, Tag, Popconfirm, Button } from 'antd';
 import { useHistory, Link } from 'react-router-dom';
 import { DateTime } from 'luxon';
 import _ from 'lodash';
 import qs from 'query-string';
 import {
-  QuestionCircleOutlined, DeleteOutlined, SettingOutlined, VideoCameraOutlined,
+  QuestionCircleOutlined, DeleteOutlined, SettingOutlined, VideoCameraOutlined, RightOutlined,
 } from '@ant-design/icons';
 
 export default function MeetingTable({
-  data, userId, loading, confirmDelete, userName,
+  data, userId, loading, confirmDelete, userName, setNextPageToken,
+  showPagination,
 }) {
   const { push } = useHistory();
 
@@ -85,14 +86,24 @@ export default function MeetingTable({
   ];
 
   return (
-    <Table
-      columns={columns}
-      dataSource={data.meetings}
-      loading={loading && _.isEmpty(data.meetings)}
-      rowKey="id"
-      pagination={false}
-      showSorterTooltip={false}
-    />
+    <>
+      <Table
+        columns={columns}
+        dataSource={data.meetings}
+        loading={loading && _.isEmpty(data.meetings)}
+        rowKey="id"
+        pagination={false}
+        showSorterTooltip={false}
+      />
+      {showPagination && (
+        <div className="pagination-btn">
+          <Button
+            onClick={() => setNextPageToken(data.next_page_token)}
+            size="small" icon={<RightOutlined />}
+          />
+        </div>
+      )}
+    </>
   )
 }
 
@@ -101,4 +112,4 @@ MeetingTable.propTypes = {
   userId: PropTypes.string.isRequired,
   userName: PropTypes.string.isRequired,
   confirmDelete: PropTypes.func.isRequired,
-}
+};

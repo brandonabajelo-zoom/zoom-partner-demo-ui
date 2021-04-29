@@ -1,14 +1,15 @@
 import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import {
-  Layout, Input, Form, Button, DatePicker, Select, Checkbox,
+  Layout, Input, Form, Button, DatePicker, Select, Checkbox, Drawer
 } from 'antd';
 import { useParams, useHistory, Link } from 'react-router-dom';
-import { CheckOutlined } from '@ant-design/icons';
 import { DateTime } from 'luxon';
 import _ from 'lodash';
 import moment from 'moment';
 import useAxios from 'axios-hooks';
+import { CheckOutlined, InfoCircleOutlined } from '@ant-design/icons';
+
 import timezones from '../../../timezones';
 import Error from '../error';
 
@@ -27,6 +28,7 @@ const DEFAULT_INITIAL_VALUES = {
 export default function WebinarForm({ initialValues, refetch }) {
   const { userId, webinarId } = useParams();
   const [formError, setFormError] = useState();
+  const [drawerVisible, setVisible] = useState(false);
   const [form] = Form.useForm();
   const { push } = useHistory();
 
@@ -109,6 +111,9 @@ export default function WebinarForm({ initialValues, refetch }) {
       <Header className="header-flex">
         <div>
           {webinarId ? 'Manage Webinar' : 'Schedule Webinar'}
+          <span className="drawer-icon">
+            <InfoCircleOutlined onClick={() => setVisible(true)} />
+          </span>
         </div>
       </Header>
       <Content className="form-content">
@@ -130,7 +135,7 @@ export default function WebinarForm({ initialValues, refetch }) {
               required: true, message: 'Topic is required',
             }]}
           >
-            <Input />
+            <Input placeholder="Webinar topic" />
           </Item>
           <Item
             label="Description"
@@ -221,6 +226,34 @@ export default function WebinarForm({ initialValues, refetch }) {
           </Item>
         </Form>
       </Content>
+      <Drawer
+        title="Zoom APIs -- https://api.zoom.us/v2"
+        closable={false}
+        onClose={() => setVisible(false)}
+        visible={drawerVisible}
+        width={400}
+      >
+        <h3>Webinars</h3>
+        <hr />
+        <ul>
+          {!webinarId && (
+            <>
+              <li><h4>POST /users/:userId/webinars</h4></li>
+              <a href="https://marketplace.zoom.us/docs/api-reference/zoom-api/webinars/webinarcreate" target="_blank" rel="noreferrer">
+                https://marketplace.zoom.us/docs/api-reference/zoom-api/webinars/webinarcreate
+              </a>
+            </>
+          )}
+          {webinarId && (
+            <>
+              <li><h4>PATCH /webinars/:webinarId</h4></li>
+              <a href="https://marketplace.zoom.us/docs/api-reference/zoom-api/webinars/webinarupdate" target="_blank" rel="noreferrer">
+                https://marketplace.zoom.us/docs/api-reference/zoom-api/webinars/webinarupdate
+              </a>
+            </>
+          )}
+        </ul>
+      </Drawer>
     </Layout>
   );
 }

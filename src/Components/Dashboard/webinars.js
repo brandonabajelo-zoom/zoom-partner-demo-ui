@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import { Table, Layout, Tag } from 'antd';
+import { Table, Layout, Tag, Button } from 'antd';
 import qs from 'query-string';
 import { DateTime } from 'luxon';
 import useAxios from 'axios-hooks';
 import _ from 'lodash';
-import { CheckOutlined, MinusOutlined } from '@ant-design/icons';
+import { CheckOutlined, MinusOutlined, RightOutlined } from '@ant-design/icons';
 
 import Error from '../Users/error';
 
@@ -95,9 +95,10 @@ const columns = [
 
 export default function DashboardMeetings() {
   const [count, setCount] = useState(0);
+  const [nextPageToken, setNextPageToken] = useState('');
   const [{ data = {}, loading, error }] = useAxios(`/api/dashboard/metrics/webinars?${qs.stringify({
-    type: 'live', count,
-  })}`)
+    type: 'live', count, next_page_token: nextPageToken,
+  })}`);
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -117,13 +118,23 @@ export default function DashboardMeetings() {
   }
 
   return (
-    <Table
-      columns={columns}
-      dataSource={data.webinars}
-      loading={loading && _.isEmpty(data.webinars)}
-      rowKey="uuid"
-      pagination={false}
-      showSorterTooltip={false}
-    />
+    <>
+      <Table
+        columns={columns}
+        dataSource={data.webinars}
+        loading={loading && _.isEmpty(data.webinars)}
+        rowKey="uuid"
+        pagination={false}
+        showSorterTooltip={false}
+      />
+      {data.page_size < data.total_records && (
+        <div className="pagination-btn">
+          <Button
+            onClick={() => setNextPageToken(data.next_page_token)}
+            size="small" icon={<RightOutlined />}
+          />
+        </div> 
+      )}
+    </>
   );
 }

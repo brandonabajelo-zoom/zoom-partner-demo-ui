@@ -39,6 +39,8 @@ Virtual Event sample application bootstrapped with [Create React App](https://gi
 
 ## Features
 
+#### Note: Zoom provides a variety of different meeting and webinar types. In this application, only type: 2 [Scheduled Meetings](https://marketplace.zoom.us/docs/api-reference/zoom-api/meetings/meetingcreate) and type: 5 [Nonrecurring Webinars](https://marketplace.zoom.us/docs/api-reference/zoom-api/webinars/webinarcreate) are used as default.
+
 ### Users
 * View active/pending users
 * Create/edit users

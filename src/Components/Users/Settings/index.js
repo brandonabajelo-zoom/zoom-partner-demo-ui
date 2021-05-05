@@ -10,6 +10,10 @@ import Error from '../error';
 
 const { Content } = Layout;
 
+/**
+ * User settings for viewing or updating feature add-ons like
+ * cloud recordings and webinars
+ */
 export default function Settings() {
   const { userId } = useParams();
   const [{ data = {}, loading, error }, refetch] = useAxios(`/api/users/${userId}/settings`);

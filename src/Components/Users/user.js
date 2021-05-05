@@ -37,6 +37,10 @@ const itemStyles = {
   },
 };
 
+/**
+ * Main navigational entry to the application. Here you can view user info, settings, webianrs, meetings,
+ * cloud recordings, and reports for a particular user (depending on what licenses are available).
+ */
 export default function User() {
   const { userId } = useParams();
   const [drawerVisible, setVisible] = useState(false);

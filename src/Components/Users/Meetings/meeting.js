@@ -32,6 +32,9 @@ const copyText = () => {
   })
 }
 
+/**
+ * View single meeting
+ */
 export default function Meeting() {
   const { userId, meetingId } = useParams();
   const { push } = useHistory();

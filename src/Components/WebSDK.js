@@ -11,14 +11,24 @@ ZoomMtg.prepareWebSDK();
 ZoomMtg.setZoomJSLib('https://source.zoom.us/1.9.1/lib', '/av');
 
 export default function WebSDK() {
+
+  /**
+   * The data needed for the WebSDK is passed here through URL paramaters
+   */
   const {
     meetingNumber, userName, userId, userEmail = '',
   } = qs.parse((useHistory().location || {}).search);
+
+  /**
+   * Retrieve API key and signature endpoint from local .env file
+   */
   const {
     REACT_APP_ZOOM_API_KEY = '', REACT_APP_SIGNATURE_ENDPOINT = '',
   } = process.env;
 
-  // Meetings/Webinars with passcodes required will need to be entered manually on the screen
+  /**
+   * Meetings/Webinars with required passcodes will need to be entered manually on the screen
+   */
   const startMeeting = (signature) => {
     document.getElementById('zmmtg-root').style.display = 'block';
     ZoomMtg.init({

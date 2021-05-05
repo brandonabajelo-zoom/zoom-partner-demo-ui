@@ -11,6 +11,9 @@ import { ReloadOutlined, PlusOutlined, InfoCircleOutlined } from '@ant-design/ic
 import Table from './table';
 import Error from '../error';
 
+/**
+ * View meetings for single user
+ */
 export default function UserMeetings({ userName }) {
   const { userId } = useParams();
   const [nextPageToken, setNextPageToken] = useState('');

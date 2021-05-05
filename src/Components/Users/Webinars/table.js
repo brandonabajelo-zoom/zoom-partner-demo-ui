@@ -54,6 +54,7 @@ export default function WebinarTable({
         ? (
           <VideoCameraOutlined
             className="table-icon"
+            // To initiate the Web SDK, we pass the required data as URL parameters
             onClick={() => push(`/websdk?${qs.stringify({ meetingNumber: row.id, userId, userName, userEmail })}`)}
           />
       ) : <Tag>Expired</Tag>,

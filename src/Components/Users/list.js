@@ -36,6 +36,9 @@ const deleteTooltip = (
   </Tooltip>
 );
 
+/**
+ * View active and pending users on an account
+ */
 export default function UsersList() {
   const [status, setStatus] = useState('active');
   const [nextPageToken, setNextPageToken] = useState('');

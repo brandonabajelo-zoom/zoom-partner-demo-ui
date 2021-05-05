@@ -18,6 +18,9 @@ import Error from '../error';
 const { Header, Content } = Layout;
 const { Item } = List;
 
+/**
+ * View participants for past webinar
+ */
 export default function Participants() {
   const { webinarId } = useParams();
   const [nextPageToken, setNextPageToken] = useState('');

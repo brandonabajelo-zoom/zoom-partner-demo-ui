@@ -11,6 +11,9 @@ import { ReloadOutlined, PlusOutlined, InfoCircleOutlined } from '@ant-design/ic
 import Table from './table';
 import Error from '../error';
 
+/**
+ * View webinars for single user
+ */
 export default function UserWebinars({ userName, userEmail }) {
   const { userId } = useParams();
   const [nextPageToken, setNextPageToken] = useState('');

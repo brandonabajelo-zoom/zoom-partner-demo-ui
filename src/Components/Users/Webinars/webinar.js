@@ -42,6 +42,9 @@ const copyText = (type) => {
   })
 }
 
+/**
+ * View single webinar
+ */
 export default function Webinar() {
   const { userId, webinarId } = useParams();
   const { push } = useHistory();

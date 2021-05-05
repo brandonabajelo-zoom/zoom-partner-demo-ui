@@ -18,6 +18,9 @@ const { Header, Content } = Layout;
 const { Group } = Radio;
 const { Item } = List;
 
+/**
+ * View/update webinar registrants (pending, approved, denied)
+ */
 export default function Registrants() {
   const { webinarId } = useParams();
   const [status, setStatus] = useState('pending')

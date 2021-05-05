@@ -71,6 +71,9 @@ const columns = [
   }
 ]
 
+/**
+ * View meeting reports for a specific user id
+ */
 export default function Reports() {
   const { userId } = useParams();
   const [nextPageToken, setNextPageToken] = useState('');

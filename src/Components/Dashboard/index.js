@@ -11,6 +11,9 @@ import DashboardWebinars from './webinars';
 const { Header, Content } = Layout;
 const { TabPane } = Tabs;
 
+/**
+ * View dashboard metrics of live meetings and webinars
+ */
 export default function Dashboard() {
   const { push } = useHistory();
   const [drawerVisible, setVisible] = useState(false);

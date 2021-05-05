@@ -19,6 +19,9 @@ const { RangePicker } = DatePicker;
 
 const apiDateFormat = 'YYYY-MM-DD';
 
+/**
+ * View cloud recordings of meetings and webinars
+ */
 export default function Recordings() {
   const { userId } = useParams();
   const [nextPageToken, setNextPageToken] = useState('');

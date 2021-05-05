@@ -7,6 +7,9 @@ import ReactJson from 'react-json-view'
 
 import Error from '../error';
 
+/**
+ * View quality of service metrics for specific meeting participant
+ */
 export default function QoS({ meetingId, participantId }) {
   const [
     { data = {}, loading, error },

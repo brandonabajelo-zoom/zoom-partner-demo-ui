@@ -88,16 +88,15 @@ export default function WebinarForm({ initialValues, refetch }) {
     if (!_.isEmpty(initialValues)) {
       const {
         duration,
-        start_time: current_time,
+        start_time,
         settings: { auto_recording, approval_type },
         ...rest
       } = initialValues;
       const hour = duration / 60;
       const min = (hour - Math.floor(hour)) * 60;
-      const start_time = moment(current_time);
       return {
         hour, min,
-        start_time,
+        start_time: moment(start_time),
         auto_recording: auto_recording === 'cloud',
         approval_type: approval_type === 1,
         ...rest,

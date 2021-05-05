@@ -34,7 +34,13 @@ export default function Settings() {
     );
   }
 
-  const { feature = {} } = data;
+  const { feature = {}, recording = {} } = data;
 
-  return <SettingsForm userId={userId} initialValues={feature} refetch={refetch} />
+  return (
+    <SettingsForm
+      userId={userId}
+      initialValues={{ cloud_recording: recording.cloud_recording, webinar: feature.webinar }}
+      refetch={refetch}
+    />
+  );
 }

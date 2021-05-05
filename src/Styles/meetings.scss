@@ -146,3 +146,22 @@ $svgColor: rgba(0, 0, 0, 0.45);
   justify-content: flex-end;
   margin-top: 10px;
 }
+
+.qos-flex {
+  display: flex;
+  align-items: center;
+  > .anticon {
+    margin-left: 10px;
+    &:hover {
+      color: $zoomBlue;
+    }
+    &.selected {
+      color: $zoomBlue;
+    }
+  }
+}
+
+.qos-loading {
+  text-align: center;
+  margin-top: 10px;
+}

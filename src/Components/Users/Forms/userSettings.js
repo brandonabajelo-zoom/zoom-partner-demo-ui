@@ -25,8 +25,13 @@ export default function SettingsForm({ userId, initialValues, refetch }) {
 
   const handleEdit = async (data) => {
     setFormError();
+
+    const submitData = {
+      feature: { webinar: data.webinar },
+      recording: { cloud_recording: data.cloud_recording },
+    }
   
-    await executePatch({ data: { feature: { webinar: data.webinar } } })
+    await executePatch({ data: submitData })
       .then(() => !!refetch && refetch())
       .catch((err) => setFormError(err));
   }
@@ -56,6 +61,9 @@ export default function SettingsForm({ userId, initialValues, refetch }) {
           <Row span={24} gutter={12}>
             <Col span={12}>
               <Item label="Webinar" valuePropName="checked" name="webinar">
+                <Checkbox />
+              </Item>
+              <Item label="Cloud Recording" valuePropName="checked" name="cloud_recording">
                 <Checkbox />
               </Item>
             </Col>

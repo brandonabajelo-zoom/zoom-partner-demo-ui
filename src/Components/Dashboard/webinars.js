@@ -91,7 +91,7 @@ const columns = [
     align: 'center',
     render: renderField,
   },
-]
+];
 
 export default function DashboardMeetings() {
   const [count, setCount] = useState(0);

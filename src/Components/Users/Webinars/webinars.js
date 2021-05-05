@@ -25,10 +25,13 @@ export default function UserWebinars({ userName, userEmail }) {
     await axios.delete(`/api/webinars/${webinarId}`).then(() => refetchWebinars());
   };
 
+  /**
+   * For the purposes of this demo, only webinars of type: 5 (nonrecurring) will be shown
+   */
   const filteredData = (() => {
     const { webinars = [], ...rest } = data || {};
     return {
-      webinars: webinars.filter(({ topic }) => topic.toLowerCase().indexOf(query.toLowerCase()) > -1),
+      webinars: webinars.filter(({ topic, type }) => topic.toLowerCase().indexOf(query.toLowerCase()) > -1 && type === 5),
       ...rest,
     }
   })();
@@ -99,6 +102,10 @@ export default function UserWebinars({ userName, userEmail }) {
           <a href="https://marketplace.zoom.us/docs/api-reference/zoom-api/webinars/webinars" target="_blank" rel="noreferrer">
             https://marketplace.zoom.us/docs/api-reference/zoom-api/webinars/webinars
           </a>
+          <hr />
+          <div>
+            <small>*For the purposes of this demo, only <b>type: 5</b> nonrecurring webinars will be shown</small>
+          </div>
         </ul>
       </Drawer>
     </div>

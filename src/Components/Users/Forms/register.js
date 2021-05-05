@@ -24,7 +24,7 @@ export default function WebinarRegister() {
 
   const handlePost = async (data) => {
     setFormError();
-    
+
     const { first_name, last_name, email } = data;
     const submitData = { first_name, last_name, email };
 

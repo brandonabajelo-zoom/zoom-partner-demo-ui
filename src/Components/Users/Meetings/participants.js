@@ -9,9 +9,10 @@ import {
 } from 'antd';
 import {
   UserOutlined, ReloadOutlined, FieldTimeOutlined, RightOutlined,
-  InfoCircleOutlined,
+  InfoCircleOutlined, ExperimentOutlined,
 } from '@ant-design/icons';
 
+import QoS from './qos';
 import Error from '../error';
 
 const { Header, Content } = Layout;
@@ -20,6 +21,7 @@ const { Item } = List;
 export default function Participants() {
   const { meetingId } = useParams();
   const [nextPageToken, setNextPageToken] = useState('');
+  const [qosId, setQosId] = useState('');
   const [drawerVisible, setVisible] = useState(false);
   const [query, setQuery] = useState('')
 
@@ -78,26 +80,39 @@ export default function Participants() {
               </Tag>
             </div>
           )}
-          renderItem={({ name, user_email, join_time, leave_time, duration }) => (
-            <Item>
-              <Item.Meta
-                avatar={<UserOutlined />}
-                title={name}
-                description={user_email || 'n/a'}
-              />
-              <div style={{ marginRight: 20 }}>
-                {`
-                ${DateTime.fromISO(join_time).toLocaleString(DateTime.DATETIME_MED)}
-                -
-                ${DateTime.fromISO(leave_time).toLocaleString(DateTime.DATETIME_MED)}
-                `}
-              </div>
-              <div>
-                <Tag style={{ fontSize: 14 }} color="blue">
-                  {new Date(duration * 1000).toISOString().substr(11, 8)}
+          renderItem={({ name, user_email, join_time, leave_time, duration, user_id }) => (
+            <>
+              <Item>
+                <Item.Meta
+                  avatar={<UserOutlined />}
+                  title={(
+                    <div className="qos-flex">
+                      <div>{name}</div>
+                      <Tooltip title="Metrics">
+                        <ExperimentOutlined
+                          className={qosId === user_id && 'selected'}
+                          onClick={() => setQosId(qosId === user_id ? '' : user_id)}
+                        />
+                      </Tooltip>
+                    </div>
+                  )}
+                  description={user_email || 'n/a'}
+                />
+                <Tag style={{ marginRight: 20 }}>
+                  {`
+                  ${DateTime.fromISO(join_time).toLocaleString(DateTime.DATETIME_SHORT_WITH_SECONDS)}
+                  -
+                  ${DateTime.fromISO(leave_time).toLocaleString(DateTime.DATETIME_SHORT_WITH_SECONDS)}
+                  `}
                 </Tag>
-              </div>
-            </Item>
+                <div>
+                  <Tag style={{ fontSize: 14 }} color="blue">
+                    {new Date(duration * 1000).toISOString().substr(11, 8)}
+                  </Tag>
+                </div>
+              </Item>
+              {qosId === user_id && <QoS meetingId={meetingId} participantId={user_id} />}
+            </>
           )}
         />
         {data.page_size < data.total_records && (
@@ -122,6 +137,14 @@ export default function Participants() {
           <li><h4>GET /report/meetings/:meetingId/participants</h4></li>
           <a href="https://marketplace.zoom.us/docs/api-reference/zoom-api/meetings/pastmeetingparticipants" target="_blank" rel="noreferrer">
             https://marketplace.zoom.us/docs/api-reference/zoom-api/meetings/pastmeetingparticipants
+          </a>
+        </ul>
+        <h3>Metrics</h3>
+        <hr />
+        <ul>
+          <li><h4>GET /metrics/meetings/:meetingId/participants/:participantId/qos</h4></li>
+          <a href="https://marketplace.zoom.us/docs/api-reference/zoom-api/dashboards/dashboardmeetingparticipantqos" target="_blank" rel="noreferrer">
+            https://marketplace.zoom.us/docs/api-reference/zoom-api/dashboards/dashboardmeetingparticipantqos
           </a>
         </ul>
       </Drawer>

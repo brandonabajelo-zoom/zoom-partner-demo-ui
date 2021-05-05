@@ -25,10 +25,13 @@ export default function UserMeetings({ userName }) {
     await axios.delete(`/api/meetings/${meetingId}`).then(() => refetch());
   };
 
+  /**
+   * For the purposes of this demo, only type: 2 scheduled meetings will be shown
+   */
   const filteredData = (() => {
     const { meetings = [], ...rest } = data || {};
     return {
-      meetings: meetings.filter(({ topic }) => topic.toLowerCase().indexOf(query.toLowerCase()) > -1),
+      meetings: meetings.filter(({ topic, type }) => topic.toLowerCase().indexOf(query.toLowerCase()) > -1 && type === 2),
       ...rest,
     }
   })();
@@ -98,6 +101,10 @@ export default function UserMeetings({ userName }) {
           <a href="https://marketplace.zoom.us/docs/api-reference/zoom-api/meetings/meetings" target="_blank" rel="noreferrer">
             https://marketplace.zoom.us/docs/api-reference/zoom-api/meetings/meetings
           </a>
+          <hr />
+          <div>
+            <small>*For the purposes of this demo, only <b>type: 2</b> scheduled meeetings will be shown</small>
+          </div>
         </ul>
       </Drawer>
     </div>

@@ -19,7 +19,10 @@ const { Option } = Select;
 const { Item } = Form;
 
 const DEFAULT_INITIAL_VALUES = {
-  hour: 1, min: 0, timezone: Intl.DateTimeFormat().resolvedOptions().timeZone, start_time: moment(),
+  hour: 1,
+  min: 0,
+  timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
+  start_time: moment(),
 };
 
 export default function MeetingForm({ initialValues, refetch }) {
@@ -84,17 +87,16 @@ export default function MeetingForm({ initialValues, refetch }) {
     if (!_.isEmpty(initialValues)) {
       const {
         duration,
-        start_time: current_time,
+        start_time,
         settings: { auto_recording },
         ...rest
       } = initialValues;
       const hour = duration / 60;
       const min = (hour - Math.floor(hour)) * 60;
-      const start_time = moment(current_time);
       return {
         hour,
         min,
-        start_time,
+        start_time: moment(start_time),
         auto_recording: auto_recording === 'cloud',
         ...rest,
       }

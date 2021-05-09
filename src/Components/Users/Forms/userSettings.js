@@ -67,19 +67,17 @@ export default function SettingsForm({ userId, initialValues, refetch }) {
                 <Checkbox />
               </Item>
             </Col>
-            <Col span={12}>
-              <div className="flex-end">
-                <Button
-                  type="primary"
-                  htmlType="submit"
-                  icon={<CheckOutlined />}
-                  loading={loading}
-                >
-                  Save
-                </Button>
-              </div>
-            </Col>
           </Row>
+          <div className="flex-end">
+            <Button
+              type="primary"
+              htmlType="submit"
+              icon={<CheckOutlined />}
+              loading={loading}
+            >
+              Save
+            </Button>
+          </div>
         </Form>
       </Content>
       <Drawer

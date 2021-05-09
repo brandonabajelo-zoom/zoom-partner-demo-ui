@@ -51,7 +51,7 @@ export default function User() {
 
   const {
     first_name = '', last_name = '', email = '', created_at = '',
-    status = '', timezone = '', pmi = '', id = '', last_login_time = '',
+    status = '', timezone = '', pmi = '', id = '', last_login_time = '', use_pmi = true,
   } = data;
 
   if (loading && _.isEmpty(data)) {
@@ -96,11 +96,13 @@ export default function User() {
           </Item>
           <Item {...itemStyles} label="Personal Meeting ID">
             {pmi}
+            {use_pmi && (
             <Tooltip title="Click to start an instant zoom meeting!">
               <Link to={`/websdk?${queryParams}`}>
                 <VideoCameraOutlined className="question-icon" />
               </Link>
-            </Tooltip>
+            </Tooltip>              
+            )}
           </Item>
           <Item {...itemStyles} label="Timezone">
             <Tag color="blue">{timezone}</Tag>

@@ -2,15 +2,17 @@ import React, { useState } from 'react';
 import useAxios from 'axios-hooks';
 import {
   Table, Tag, Divider, Input, DatePicker, Button,
-  Tooltip, Drawer,
+  Tooltip, Drawer, Popconfirm,
 } from 'antd';
 import { DateTime } from 'luxon';
 import moment from 'moment'
+import axios from 'axios';
 import _ from 'lodash';
 import qs from 'query-string';
 import { useParams } from 'react-router-dom';
 import {
   PlayCircleOutlined, RightOutlined, ReloadOutlined, InfoCircleOutlined,
+  DeleteOutlined, QuestionCircleOutlined,
 } from '@ant-design/icons';
 
 import Error from '../error';
@@ -34,6 +36,13 @@ export default function Recordings() {
     to: dateRange[1].format(apiDateFormat),
     next_page_token: nextPageToken
   }))}`);
+
+  const confirmDelete = async (deleteId) => {
+    await axios.delete(`/api/meetings/${encodeURIComponent(encodeURIComponent(deleteId))}/recordings?${qs.stringify({
+      action: 'delete',
+    })}`)
+    .then(() => refetch());
+  }
 
   const columns = [
     {
@@ -61,6 +70,22 @@ export default function Recordings() {
         <a href={row.share_url} target="_blank" rel="noreferrer">
           <PlayCircleOutlined className="table-icon" />
         </a>
+      ),
+    },
+    {
+      title: '',
+      align: 'center',
+      width: '5%',
+      render: (text, row) => (
+        <Popconfirm
+          title="Are you sure you want to permanently delete this recording?"
+          onConfirm={() => confirmDelete(row.uuid)}
+          icon={<QuestionCircleOutlined style={{ color: 'red' }} />}
+          okText="Delete"
+          placement="left"
+        >
+          <DeleteOutlined className="table-icon" />
+        </Popconfirm>
       ),
     }
   ]
@@ -131,6 +156,11 @@ export default function Recordings() {
           <li><h4>GET /users/:userId/recordings</h4></li>
           <a href="https://marketplace.zoom.us/docs/api-reference/zoom-api/cloud-recording/recordingslist" target="_blank" rel="noreferrer">
             https://marketplace.zoom.us/docs/api-reference/zoom-api/cloud-recording/recordingslist
+          </a>
+          <hr />
+          <li><h4>DELETE /meetings/:meetingId/recordings</h4></li>
+          <a href="https://marketplace.zoom.us/docs/api-reference/zoom-api/cloud-recording/recordingdelete" target="_blank" rel="noreferrer">
+            https://marketplace.zoom.us/docs/api-reference/zoom-api/cloud-recording/recordingdelete
           </a>
         </ul>
       </Drawer>

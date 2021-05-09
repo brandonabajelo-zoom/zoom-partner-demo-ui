@@ -49,7 +49,8 @@ export default function MeetingForm({ initialValues, refetch }) {
     setFormError();
 
     const {
-      hour, min,
+      hour,
+      min,
       start_time: moment_start_time,
       auto_recording,
       ...rest
@@ -199,7 +200,7 @@ export default function MeetingForm({ initialValues, refetch }) {
           </Item>
           <Item>
             <div className="flex-end">
-              <Link to={`/users/${userId}`}>
+              <Link to={`/users/${userId}/meetings`}>
                 <Button>Cancel</Button>
               </Link>
               <Button

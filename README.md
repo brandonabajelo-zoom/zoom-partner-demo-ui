@@ -68,6 +68,7 @@ Virtual Event sample application bootstrapped with [Create React App](https://gi
 
 ### Cloud Recordings
 * View cloud recordings
+* Delete cloud recording
 
 ## Zoom API's
 #### To view which Zoom API's are being used to provide data to each component, simply click the info icon associated with each header text:

@@ -5,7 +5,7 @@ import {
 } from 'antd';
 import { useParams, useHistory, Link } from 'react-router-dom';
 import { DateTime } from 'luxon';
-import moment from 'moment';
+import moment from 'moment-timezone';
 import _ from 'lodash';
 import useAxios from 'axios-hooks';
 import { CheckOutlined, InfoCircleOutlined } from '@ant-design/icons';
@@ -53,6 +53,7 @@ export default function MeetingForm({ initialValues, refetch }) {
       min,
       start_time: moment_start_time,
       auto_recording,
+      timezone,
       ...rest
     } = data;
 
@@ -62,6 +63,7 @@ export default function MeetingForm({ initialValues, refetch }) {
       settings: {
         auto_recording: auto_recording ? 'cloud' : 'none',
       },
+      timezone,
       ...rest,
     };
 
@@ -90,6 +92,7 @@ export default function MeetingForm({ initialValues, refetch }) {
         duration,
         start_time,
         settings: { auto_recording },
+        timezone,
         ...rest
       } = initialValues;
       const hour = duration / 60;
@@ -97,8 +100,9 @@ export default function MeetingForm({ initialValues, refetch }) {
       return {
         hour,
         min,
-        start_time: moment(start_time),
+        start_time: moment(start_time).tz(timezone),
         auto_recording: auto_recording === 'cloud',
+        timezone,
         ...rest,
       }
     }

@@ -88,9 +88,9 @@ export default function UserWebinars({ userName, userEmail }) {
             placeholder="Search Topics"
           />
           <Divider />
+          <Table {...componentProps} />
         </>
       )}
-      {!error && <Table {...componentProps} />}
       <Drawer
         title="Zoom APIs -- https://api.zoom.us/v2"
         closable={false}

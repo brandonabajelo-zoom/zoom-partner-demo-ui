@@ -69,7 +69,7 @@ const columns = [
     align: 'center',
     sorter: (a, b) => a.total_minutes - b.total_minutes,
   }
-]
+];
 
 /**
  * View meeting reports for a specific user id
@@ -86,16 +86,6 @@ export default function Reports() {
     to: dateRange[1].format(apiDateFormat),
     next_page_token: nextPageToken
   }))}`);
-
-  if (error) {
-    return (
-      <Layout className="layout-container">
-        <Content className="align-center">
-          <Error error={error} />
-        </Content>
-      </Layout>
-    );
-  }
 
   return (
     <Layout className="layout-container edit">
@@ -116,36 +106,41 @@ export default function Reports() {
         </Tooltip>
       </Header>
       <Content>
-        <div className="flex-space-between">
-          <RangePicker
-            value={dateRange}
-            format={apiDateFormat}
-            onChange={dates => setDateRange(dates)}
-            style={{ marginRight: 10, width: '30%' }}
-          />
-          <Input
-            value={query}
-            onChange={e => setQuery(e.target.value)}
-            placeholder="Search Reports"
-          />
-        </div>
-        <Divider /> 
-        <Table
-          columns={columns}
-          loading={loading && _.isEmpty(data.meetings)}
-          dataSource={(data.meetings || [])
-            .filter(({ topic }) => topic.toLowerCase().indexOf(query.toLowerCase()) > -1)}
-          rowKey="uuid"
-          pagination={false}
-          showSorterTooltip={false}
-        />
-        {data.page_size < data.total_records && (
-          <div className="pagination-btn">
-            <Button
-              onClick={() => setNextPageToken(data.next_page_token)}
-              size="small" icon={<RightOutlined />}
+        {error && <Error error={error} />}
+        {!error && (
+          <>
+            <div className="flex-space-between">
+              <RangePicker
+                value={dateRange}
+                format={apiDateFormat}
+                onChange={dates => setDateRange(dates)}
+                style={{ marginRight: 10, width: '30%' }}
+              />
+              <Input
+                value={query}
+                onChange={e => setQuery(e.target.value)}
+                placeholder="Search Reports"
+              />
+            </div>
+            <Divider /> 
+            <Table
+              columns={columns}
+              loading={loading && _.isEmpty(data.meetings)}
+              dataSource={(data.meetings || [])
+                .filter(({ topic }) => topic.toLowerCase().indexOf(query.toLowerCase()) > -1)}
+              rowKey="uuid"
+              pagination={false}
+              showSorterTooltip={false}
             />
-          </div> 
+            {data.page_size < data.total_records && (
+              <div className="pagination-btn">
+                <Button
+                  onClick={() => setNextPageToken(data.next_page_token)}
+                  size="small" icon={<RightOutlined />}
+                />
+              </div> 
+            )}          
+          </>
         )}
       </Content>
       <Drawer

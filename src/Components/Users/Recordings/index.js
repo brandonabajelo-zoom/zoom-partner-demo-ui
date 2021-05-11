@@ -88,11 +88,7 @@ export default function Recordings() {
         </Popconfirm>
       ),
     }
-  ]
-
-  if (error) {
-    return <Error error={error} />
-  }
+  ];
 
   return (
     <div className="component-container">
@@ -112,36 +108,41 @@ export default function Recordings() {
           />
         </Tooltip>
       </div>
-      <div className="flex-space-between">
-        <RangePicker
-          value={dateRange}
-          format={apiDateFormat}
-          onChange={dates => setDateRange(dates)}
-          style={{ marginRight: 10, width: '30%' }}
-        />
-        <Input
-          value={query}
-          onChange={e => setQuery(e.target.value)}
-          placeholder="Search Recordings"
-        />
-      </div>
-      <Divider />
-      <Table
-        columns={columns}
-        dataSource={(data.meetings || [])
-          .filter(({ topic }) => topic.toLowerCase().indexOf(query.toLowerCase()) > -1)}
-        rowKey="uuid"
-        pagination={false}
-        loading={loading && _.isEmpty(data.meetings)}
-        showSorterTooltip={false}
-      />
-      {data.page_size < data.total_records && (
-        <div className="pagination-btn">
-          <Button
-            onClick={() => setNextPageToken(data.next_page_token)}
-            size="small" icon={<RightOutlined />}
+      {error && <Error error={error} />}
+      {!error && (
+        <>
+          <div className="flex-space-between">
+            <RangePicker
+              value={dateRange}
+              format={apiDateFormat}
+              onChange={dates => setDateRange(dates)}
+              style={{ marginRight: 10, width: '30%' }}
+            />
+            <Input
+              value={query}
+              onChange={e => setQuery(e.target.value)}
+              placeholder="Search Recordings"
+            />
+          </div>
+          <Divider />
+          <Table
+            columns={columns}
+            dataSource={(data.meetings || [])
+              .filter(({ topic }) => topic.toLowerCase().indexOf(query.toLowerCase()) > -1)}
+            rowKey="uuid"
+            pagination={false}
+            loading={loading && _.isEmpty(data.meetings)}
+            showSorterTooltip={false}
           />
-        </div> 
+          {data.page_size < data.total_records && (
+            <div className="pagination-btn">
+              <Button
+                onClick={() => setNextPageToken(data.next_page_token)}
+                size="small" icon={<RightOutlined />}
+              />
+            </div> 
+          )}        
+        </>
       )}
       <Drawer
         title="Zoom APIs -- https://api.zoom.us/v2"

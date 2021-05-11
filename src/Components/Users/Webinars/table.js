@@ -42,15 +42,22 @@ export default function WebinarTable({
       sorter: (a, b) => a.start_time.localeCompare(b.start_time),
       render: (text, row) => (
         <Tag color="blue">
-          {DateTime.fromISO(row.start_time).toLocaleString(DateTime.DATETIME_MED)}
+          {DateTime.fromISO(row.start_time, { zone: row.timezone }).toLocaleString(DateTime.DATETIME_MED)}
         </Tag>
       ),
+    },
+    {
+      title: 'Timezone',
+      dataIndex: 'timezone',
+      key: 'timezone',
+      sorter: (a, b) => a.timezone.localeCompare(b.timezone),
+      render: (text) => (text ? <Tag color="blue">{text}</Tag> : ''),
     },
     {
       title: '',
       align: 'center',
       width: '5%',
-      render: (text, row) => DateTime.fromISO(row.start_time).plus({ minutes: row.duration }) > DateTime.now()
+      render: (text, row) => DateTime.fromISO(row.start_time, { zone: row.timezone }).plus({ minutes: row.duration }) > DateTime.now({ zone: row.timezone })
         ? (
           <VideoCameraOutlined
             className="table-icon"

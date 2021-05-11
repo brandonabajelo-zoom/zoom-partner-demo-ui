@@ -47,7 +47,7 @@ export default function User() {
   const { pathname, search } = useLocation();
   const { push } = useHistory();
 
-  const [{ data = {}, loading, error }, refetch] = useAxios(`/api/users/${userId}`);
+  const [{ data = {}, loading, error = {} }, refetch] = useAxios(`/api/users/${userId}`);
 
   const {
     first_name = '', last_name = '', email = '', created_at = '',

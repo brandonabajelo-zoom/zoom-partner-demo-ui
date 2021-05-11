@@ -25,7 +25,7 @@ axios.defaults.baseURL = apiHost;
 axios.interceptors.response.use((response) => {
   return response;
 }, (error) => {
-  if (error.response.status === 401) {
+  if ((error.response || {}).status === 401) {
     return window.location = '/refresh';
   } else {
     return Promise.reject(error);

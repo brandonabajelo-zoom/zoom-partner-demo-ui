@@ -86,7 +86,7 @@ export default function Meeting() {
     <Layout className="layout-container">
       <Header className="header-start">
         <div>
-          <Link to={`/users/${userId}`}>
+          <Link to={`/users/${userId}/meetings`}>
             {`${first_name} ${last_name}`}
           </Link>
           <div className="carrot-right">

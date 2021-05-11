@@ -41,9 +41,16 @@ export default function MeetingTable({
       sorter: (a, b) => a.start_time.localeCompare(b.start_time),
       render: (text, row) => (
         <Tag color="blue">
-          {DateTime.fromISO(row.start_time).toLocaleString(DateTime.DATETIME_MED)}
+          {DateTime.fromISO(row.start_time, { zone: row.timezone }).toLocaleString(DateTime.DATETIME_MED)}
         </Tag>
       ),
+    },
+    {
+      title: 'Timezone',
+      dataIndex: 'timezone',
+      key: 'timezone',
+      sorter: (a, b) => a.timezone.localeCompare(b.timezone),
+      render: (text) => (text ? <Tag color="blue">{text}</Tag> : ''),
     },
     {
       title: '',

@@ -4,7 +4,7 @@ $grey: grey;
 $black: #000;
 
 html {
-  overflow: scroll;
+  overflow: auto !important;
 }
 
 body {
@@ -15,7 +15,7 @@ body {
   -moz-osx-font-smoothing: grayscale;
 
   background-color: $background;
-  overflow: scroll;
+  overflow: auto !important;
   margin-bottom: 40px;
 }
 

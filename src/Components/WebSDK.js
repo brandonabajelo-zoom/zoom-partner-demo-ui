@@ -16,14 +16,15 @@ export default function WebSDK() {
    * The data needed for the WebSDK is passed here through URL paramaters
    */
   const {
-    meetingNumber, userName, userId, userEmail = '',
+    meetingNumber = '', userName = '', userId = '', userEmail = '',
   } = qs.parse((useHistory().location || {}).search);
 
   /**
    * Retrieve API key and signature endpoint from local .env file
    */
   const {
-    REACT_APP_ZOOM_API_KEY = '', REACT_APP_SIGNATURE_ENDPOINT = '', NODE_ENV, REACT_APP_ZOOM_PROD_API_KEY,
+    REACT_APP_ZOOM_API_KEY = '', REACT_APP_SIGNATURE_ENDPOINT = '',
+    NODE_ENV = '', REACT_APP_ZOOM_PROD_API_KEY = '',
   } = process.env;
 
   const isProduction = NODE_ENV === 'production';

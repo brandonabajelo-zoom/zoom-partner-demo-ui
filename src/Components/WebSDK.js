@@ -23,8 +23,10 @@ export default function WebSDK() {
    * Retrieve API key and signature endpoint from local .env file
    */
   const {
-    REACT_APP_ZOOM_API_KEY = '', REACT_APP_SIGNATURE_ENDPOINT = '',
+    REACT_APP_ZOOM_API_KEY = '', REACT_APP_SIGNATURE_ENDPOINT = '', NODE_ENV, PROD_KEY,
   } = process.env;
+
+  const isProduction = NODE_ENV === 'production';
 
   /**
    * Meetings/Webinars with required passcodes will need to be entered manually on the screen
@@ -32,7 +34,7 @@ export default function WebSDK() {
   const startMeeting = (signature) => {
     document.getElementById('zmmtg-root').style.display = 'block';
     ZoomMtg.init({
-      leaveUrl: `http://localhost:3000/users/${userId}`,
+      leaveUrl: `${window.location.origin}/users/${userId}`,
       isSupportAV: true,
       success: (success) => {
         console.log('init success', success);
@@ -41,7 +43,7 @@ export default function WebSDK() {
           signature,
           meetingNumber,
           userName,
-          apiKey: REACT_APP_ZOOM_API_KEY,
+          apiKey: isProduction ? PROD_KEY : REACT_APP_ZOOM_API_KEY,
           userEmail,
           success: (joinSuccess) => console.log('Meeting join success: ', joinSuccess),
           error: (joinError) => console.error('Error joining meeting: ', joinError),
@@ -52,13 +54,17 @@ export default function WebSDK() {
   };
 
   const getSignature = () => {
+    const signature_url = isProduction
+      ? 'https://zoompartnersignature.herokuapp.com/'
+      : REACT_APP_SIGNATURE_ENDPOINT;
+
     const SIGNATURE_OPTIONS = {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ meetingNumber, role: 1 }),
     };
 
-    fetch(REACT_APP_SIGNATURE_ENDPOINT, SIGNATURE_OPTIONS)
+    fetch(signature_url, SIGNATURE_OPTIONS)
       .then((data) => data.json())
       .then(({ signature }) => !!signature && startMeeting(signature));
   };

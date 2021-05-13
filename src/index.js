@@ -11,7 +11,9 @@ import reportWebVitals from './reportWebVitals';
 
 require('dotenv').config();
 
-const apiHost = 'http://localhost:5000';
+const apiHost = process.env.NODE_ENV === 'production'
+  ? 'https://api-zoompartnerdemo.herokuapp.com'
+  : 'http://localhost:5000';
 axios.defaults.headers.common['Content-Type'] = 'application/json';
 axios.defaults.baseURL = apiHost;
 

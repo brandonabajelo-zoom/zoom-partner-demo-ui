@@ -53,14 +53,15 @@ button {
   align-items: center;
   justify-content: center;
   margin: 0 auto;
-  width: 50%;
+  max-width: 50%;
   margin-bottom: 20px;
   flex-direction: column;
   h1 {
     display: flex;
     color: $black;
-    font-size: 5.5em;
+    font-size: 4.5rem;
     margin-top: 25vh;
+    flex-shrink: 1;
     > .anticon {
       margin-left: 20px;
     }

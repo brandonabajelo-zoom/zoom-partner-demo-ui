@@ -8,7 +8,7 @@ declare var ZoomMtg
 ZoomMtg.preLoadWasm();
 ZoomMtg.prepareWebSDK();
 
-ZoomMtg.setZoomJSLib('https://source.zoom.us/1.9.8/lib', '/av');
+ZoomMtg.setZoomJSLib('https://source.zoom.us/1.9.6/lib', '/av');
 
 export default function WebSDK() {
 

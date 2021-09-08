@@ -5,10 +5,10 @@ import qs from 'query-string';
 
 declare var ZoomMtg
 
+ZoomMtg.setZoomJSLib('https://source.zoom.us/1.9.8/lib', '/av');
+
 ZoomMtg.preLoadWasm();
 ZoomMtg.prepareWebSDK();
-
-ZoomMtg.setZoomJSLib('https://source.zoom.us/1.9.6/lib', '/av');
 
 export default function WebSDK() {
 

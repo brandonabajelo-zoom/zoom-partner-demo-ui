@@ -5,7 +5,7 @@ import qs from 'query-string';
 
 declare var ZoomMtg
 
-ZoomMtg.setZoomJSLib('https://source.zoom.us/1.9.8/lib', '/av');
+ZoomMtg.setZoomJSLib('https://source.zoom.us/1.9.9/lib', '/av');
 
 ZoomMtg.preLoadWasm();
 ZoomMtg.prepareWebSDK();
